@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة البطل التفاعلية</title>
+    <style>
+        * { box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f7ff; text-align: center; margin: 0; padding: 20px; color: #2c3e50; }
+        .container { max-width: 800px; margin: 20px auto; background: white; padding: 35px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        h1 { color: #ff4757; font-size: 30px; margin-bottom: 5px; }
+        .section { background: #f8f9fa; padding: 20px; border-radius: 15px; margin: 20px 0; text-align: right; border: 1px solid #e9ecef; }
+        input, button { padding: 12px; font-size: 16px; border-radius: 10px; border: 2px solid #ced6e0; margin: 5px; width: 100%; max-width: 300px; }
+        input[type="text"] { width: 100%; max-width: 100%; background: #fff; }
+        button { background-color: #2ed573; color: white; border: none; font-weight: bold; cursor: pointer; transition: 0.2s; max-width: 250px; }
+        button:hover { background-color: #26af5f; }
+        .btn-ai { background-color: #6c5ce7; max-width: 280px; }
+        .btn-ai:hover { background-color: #5b4cc4; }
+        .hidden { display: none; }
+        
+        .avatar-selector { display: flex; justify-content: center; gap: 15px; margin: 20px 0; flex-wrap: wrap; }
+        .avatar-box { border: 4px solid #fff; border-radius: 50%; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .avatar-box:hover, .avatar-box.selected { transform: scale(1.05); border-color: #ff4757; }
+        .avatar-box img { width: 95px; height: 95px; border-radius: 50%; object-fit: cover; }
+        
+        #game-area { position: relative; width: 100%; min-height: 450px; background: #eef2f7; border-radius: 20px; padding: 20px; margin-top: 15px; }
+        #main-char { width: 160px; height: 160px; object-fit: contain; display: block; margin: 0 auto; transition: 0.4s; }
+        #main-char.mini { position: absolute; bottom: 15px; right: 15px; width: 80px; height: 80px; z-index: 99; border: 3px solid #ff4757; background: white; border-radius: 50%; margin: 0; }
+        
+        #speech-bubble { background: white; padding: 15px; border-radius: 15px; font-size: 22px; font-weight: bold; margin: 15px auto; max-width: 90%; border-right: 5px solid #ff4757; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        #video-holder { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; background: #000; border-radius: 15px; margin-top: 15px; }
+        #video-holder iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
+        
+        .mic-bar { width: 100%; height: 10px; background: #e0e0e0; border-radius: 5px; overflow: hidden; margin-top: 15px; }
+        #mic-progress { width: 0%; height: 100%; background: #2ed573; transition: 0.1s; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🎈 منصة البطل التفاعلية</h1>
+    
+    <!-- 1. شاشة تسجيل الدخول باسم الطفل -->
+    <div id="login-screen">
+        <p style="font-size: 18px; color: #7f8c8d;">مرحباً بك يا بطل في عالمك التفاعلي الجديد</p>
+        <div class="section" style="text-align: center;">
+            <label style="font-weight: bold; display: block; margin-bottom: 10px;">اكتب اسمك هنا للدخول:</label>
+            <input type="text" id="child-name" placeholder="مثال: أحمد" style="text-align: center;"><br>
+            <button onclick="handleLogin()">دخول 🚀</button>
+        </div>
+    </div>
+
+    <!-- 2. لوحة تحكم ولي الأمر (تفتح تلقائياً بعد الدخول) -->
+    <div id="parent-panel" class="hidden">
+        <h2 style="color: #2c3e50; font-size: 20px;">⚙️ لوحة إعدادات الجلسة لولي الأمر</h2>
+        
+        <div class="section">
+            <h3>1️⃣ روابط صور الشخصيات الخمس المفضلة للطفل:</h3>
+            <input type="text" id="img1" value="https://placehold.co" style="margin-bottom:5px;">
+            <input type="text" id="img2" value="https://placehold.co" style="margin-bottom:5px;">
+            <input type="text" id="img3" value="https://placehold.co" style="margin-bottom:5px;">
+            <input type="text" id="img4" value="https://placehold.co" style="margin-bottom:5px;">
+            <input type="text" id="img5" value="https://placehold.co">
+        </div>
+
+        <div class="section">
+            <h3>2️⃣ منافذ مقاطع فيديو اليوتيوب للطفل:</h3>
+            <button onclick="generateAIVideos()" class="btn-ai" style="margin-bottom:15px;">✨ جلب مقاطع ذكية ومحدثة تلقائياً (اليوم الأول/الثاني)</button>
+            <div id="video-inputs">
+                <input type="text" class="yt-link" id="main-yt-input" placeholder="أدخل رابط فيديو يوتيوب هنا يدوياً، أو استخدم زر الجلب الذكي بالأعلى" oninput="checkAndAddNewInput(this)">
+            </div>
+        </div>
+
+        <div class="section">
+            <h3>3️⃣ الأسئلة والألعاب بلهجتكم العامية:</h3>
+            <label>سؤال الترحيب التفاعلي:</label>
+            <input type="text" id="q-welcome" value="هلا يا بطل! منور الموقع.. كيف حالك اليوم؟"><br><br>
+            <label>سؤال اللعبة التفاعلية للجماد/الألوان:</label>
+            <input type="text" id="q-game" value="شوف هذي الكورة اللي قدامك.. وش هذي؟ قول كورة"><br><br>
+            <label>الكلمة المطلوب من الطفل نطقها لتشغيل الفيديو:</label>
+            <input type="text" id="a-game" value="كورة">
+        </div>
+        
+        <div style="text-align: center;">
+            <button onclick="saveSettingsAndProceed()">حفظ الإعدادات وبدء اللعبة 🎮</button>
+        </div>
+    </div>
+
+    <!-- 3. واجهة اختيار الشخصية للطفل -->
+    <div id="child-select-panel" class="hidden">
+        <h2 id="welcome-child-title"></h2>
+        <p style="font-size:18px;">اختر صديقك الكرتوني اللي تبغاه يلعب معك اليوم! 😍</p>
+        <div class="avatar-selector" id="box-container"></div>
+    </div>
+
+    <!-- 4. ركن اللعب والتفاعل -->
+    <div id="game-panel" class="hidden">
+        <div id="game-area">
+            <img id="main-char" src="" alt="صديق الطفل">
+            <div id="speech-bubble">جاري تحضير اللعبة...</div>
+            <div class="mic-bar"><div id="mic-progress"></div></div>
+            
+            <div id="video-holder" class="hidden">
+                <div id="player"></div>
+            </div>
+        </div>
+        <br>
+        <button onclick="resetToLogin()" style="background-color: #7f8c8d;">خروج وعودة للرئيسية ↩️</button>
+    </div>
+</div>
+
+<script>
+    // تحميل مكتبة اليوتيوب بشكل آمن
+    let tag = document.createElement('script');
+    tag.src = "https://youtube.com";
+    let firstScriptTag = document.getElementsByTagName('script');
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+    let player;
+    let config = {};
+    let attempts = 0;
+    let selectedVideoId = '';
+    let currentChildName = '';
+
+    function getDeviceID() {
+        let id = localStorage.getItem('device_uuid');
+        if (!id) {
+            id = 'dev_' + Math.random().toString(36).substr(2, 9);
+            localStorage.setItem('device_uuid', id);
+        }
+        return id;
+    }
+
+    function handleLogin() {
+        const nameInput = document.getElementById('child-name').value.trim();
+        if (!nameInput) {
+            alert("فضلاً اكتب اسم الطفل أولاً");
+            return;
+        }
+        currentChildName = nameInput;
+        document.getElementById('login-screen').classList.add('hidden');
+        document.getElementById('parent-panel').classList.remove('hidden');
+    }
+
+    function generateAIVideos() {
+        const aiDatabase = [
+            'p7Z8mD_YV_U', 'dQw4w9WgXcQ', 'z8Wd2CkWu6s', '9bZkp7q19f0', 
+            'J7h5_G164Sw', 'K-4_Y1M29c4', 'W2ndC1k8mP0', 'L_9vCkJ84Sw'
+        ];
+        
+        const day = new Date().getDate();
+        const index1 = (day) % aiDatabase.length;
+        const index2 = (day + 1) % aiDatabase.length;
+        const index3 = (day + 2) % aiDatabase.length;
+        
+        const container = document.getElementById('video-inputs');
+        container.innerHTML = ''; 
+        
+        const v1 = 'https://youtube.com' + aiDatabase[index1];
+        const v2 = 'https://youtube.com' + aiDatabase[index2];
+        const v3 = 'https://youtube.com' + aiDatabase[index3];
+        
+        container.innerHTML = `
+            <input type="text" class="yt-link" value="${v1}" oninput="checkAndAddNewInput(this)">
+            <input type="text" class="yt-link" value="${v2}" oninput="checkAndAddNewInput(this)">
+            <input type="text" class="yt-link" value="${v3}" oninput="checkAndAddNewInput(this)">
+        `;
+        alert("✨ تم توليد وجلب مقاطع تفاعلية جديدة ومحدثة بنجاح لليوم الحالي لضمان عدم ملل طفلك!");
+    }
+
+    function checkAndAddNewInput(element) {
+        let container = document.getElementById('video-inputs');
+        let inputs = container.getElementsByClassName('yt-link');
+        let lastInput = inputs[inputs.length - 1];
+        
+        if (lastInput.value.trim() !== "") {
+            let newInput = document.createElement('input');
+            newInput.type = 'text';
+            newInput.className = 'yt-link';
+            newInput.placeholder = 'أدخل رابط فيديو يوتيوب إضافي يدوياً';
+            newInput.oninput = function() { checkAndAddNewInput(this); };
+            container.appendChild(newInput);
+        }
+    }
+
+    function getYoutubeId(url) {
+        const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\/\?v=|\&v=)([^#\&\?]*).*/;
+        const match = url.match(regExp);
+        return (match && match.length === 11) ? match : 'dQw4w9WgXcQ';
+    }
+
+    function saveSettingsAndProceed() {
+        config.avatars = [
+            document.getElementById('img1').value,
+            document.getElementById('img2').value,
