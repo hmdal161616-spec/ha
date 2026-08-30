@@ -6,31 +6,27 @@
     <title>منصة البطل التفاعلية</title>
     <style>
         * { box-sizing: border-box; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #1a1a1a; text-align: center; margin: 0; padding: 20px; color: #ffffff; }
-        .container { max-width: 800px; margin: 20px auto; background: #2d2d2d; padding: 35px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); border: 1px solid #444; }
-        h1 { color: #ff4757; font-size: 30px; margin-bottom: 5px; }
-        .section { background: #383838; padding: 20px; border-radius: 15px; margin: 20px 0; text-align: right; border: 1px solid #444; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #1a1a1a; text-align: center; margin: 0; padding: 15px; color: #ffffff; }
+        .container { max-width: 800px; margin: 10px auto; background: #2d2d2d; padding: 25px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); border: 1px solid #444; }
+        h1 { color: #ff4757; font-size: 26px; margin-bottom: 5px; }
+        .section { background: #383838; padding: 15px; border-radius: 15px; margin: 15px 0; text-align: right; border: 1px solid #444; }
         input, button { padding: 12px; font-size: 16px; border-radius: 10px; border: 2px solid #555; margin: 5px; width: 100%; max-width: 300px; background: #222; color: #fff; }
         input[type="text"] { width: 100%; max-width: 100%; background: #222; }
         button { background-color: #2ed573; color: white; border: none; font-weight: bold; cursor: pointer; transition: 0.2s; max-width: 250px; }
         button:hover { background-color: #26af5f; }
         .btn-ai { background-color: #6c5ce7; max-width: 280px; }
-        .btn-ai:hover { background-color: #5b4cc4; }
+        .btn-install { background-color: #ffa502; max-width: 100%; color: #1a1a1a; font-size: 14px; padding: 8px 15px; margin-bottom: 15px; }
         .hidden { display: none; }
-        
         .avatar-selector { display: flex; justify-content: center; gap: 15px; margin: 20px 0; flex-wrap: wrap; }
-        .avatar-box { border: 4px solid #444; border-radius: 50%; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
-        .avatar-box:hover, .avatar-box.selected { transform: scale(1.05); border-color: #ff4757; }
-        .avatar-box img { width: 95px; height: 95px; border-radius: 50%; object-fit: cover; }
-        
-        #game-area { position: relative; width: 100%; min-height: 450px; background: #222; border-radius: 20px; padding: 20px; margin-top: 15px; }
-        #main-char { width: 160px; height: 160px; object-fit: contain; display: block; margin: 0 auto; transition: 0.4s; }
-        #main-char.mini { position: absolute; bottom: 15px; right: 15px; width: 80px; height: 80px; z-index: 99; border: 3px solid #ff4757; background: #2d2d2d; border-radius: 50%; margin: 0; }
-        
-        #speech-bubble { background: #333; padding: 15px; border-radius: 15px; font-size: 22px; font-weight: bold; color: #fff; margin: 15px auto; max-width: 90%; border-right: 5px solid #ff4757; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        .avatar-box { border: 4px solid #444; border-radius: 50%; cursor: pointer; transition: 0.2s; }
+        .avatar-box:hover { transform: scale(1.05); border-color: #ff4757; }
+        .avatar-box img { width: 90px; height: 90px; border-radius: 50%; object-fit: cover; }
+        #game-area { position: relative; width: 100%; min-height: 400px; background: #222; border-radius: 20px; padding: 20px; margin-top: 15px; }
+        #main-char { width: 150px; height: 150px; object-fit: contain; display: block; margin: 0 auto; transition: 0.4s; }
+        #main-char.mini { position: absolute; bottom: 15px; right: 15px; width: 75px; height: 75px; z-index: 99; border: 3px solid #ff4757; background: #2d2d2d; border-radius: 50%; margin: 0; }
+        #speech-bubble { background: #333; padding: 15px; border-radius: 15px; font-size: 20px; font-weight: bold; margin: 15px auto; max-width: 90%; border-right: 5px solid #ff4757; }
         #video-holder { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; background: #000; border-radius: 15px; margin-top: 15px; }
         #video-holder iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
-        
         .mic-bar { width: 100%; height: 10px; background: #444; border-radius: 5px; overflow: hidden; margin-top: 15px; }
         #mic-progress { width: 0%; height: 100%; background: #2ed573; transition: 0.1s; }
     </style>
@@ -38,11 +34,14 @@
 <body>
 
 <div class="container">
+    <!-- زر تثبيت التطبيق في الأعلى -->
+    <button id="install-btn" class="btn-install" onclick="showInstallInstructions()">📲 اضغط هنا لتثبيت المنصة على شاشة الجوال الرئيسية</button>
+
     <h1>🎈 منصة البطل التفاعلية</h1>
     
     <!-- 1. شاشة تسجيل الدخول باسم الطفل -->
     <div id="login-screen">
-        <p style="font-size: 18px; color: #aaa;">مرحباً بك يا بطل في عالمك التفاعلي الجديد</p>
+        <p style="font-size: 17px; color: #aaa;">مرحباً بك يا بطل في عالمك التفاعلي الجديد</p>
         <div class="section" style="text-align: center;">
             <label style="font-weight: bold; display: block; margin-bottom: 10px;">اكتب اسمك هنا للدخول:</label>
             <input type="text" id="child-name" placeholder="مثال: أحمد" style="text-align: center;"><br>
@@ -65,9 +64,9 @@
 
         <div class="section">
             <h3>2️⃣ منافذ مقاطع فيديو اليوتيوب للطفل:</h3>
-            <button onclick="generateAIVideos()" class="btn-ai" style="margin-bottom:15px;">✨ جلب مقاطع ذكية ومحدثة تلقائياً (اليوم الأول/الثاني)</button>
+            <button type="button" onclick="generateAIVideos()" class="btn-ai" style="margin-bottom:15px;">✨ جلب مقاطع ذكية ومحدثة تلقائياً (اليوم الأول/الثاني)</button>
             <div id="video-inputs">
-                <input type="text" class="yt-link" id="main-yt-input" placeholder="أدخل رابط فيديو يوتيوب هنا يدوياً، أو استخدم زر الجلب الذكي بالأعلى" oninput="checkAndAddNewInput(this)">
+                <input type="text" class="yt-link" id="main-yt-input" placeholder="أدخل رابط فيديو يوتيوب هنا يدوياً" oninput="checkAndAddNewInput(this)">
             </div>
         </div>
 
@@ -82,7 +81,7 @@
         </div>
         
         <div style="text-align: center;">
-            <button onclick="saveSettingsAndProceed()">حفظ الإعدادات وبدء اللعبة 🎮</button>
+            <button type="button" onclick="saveSettingsAndProceed()">حفظ الإعدادات وبدء اللعبة 🎮</button>
         </div>
     </div>
 
@@ -99,28 +98,31 @@
             <img id="main-char" src="" alt="صديق الطفل">
             <div id="speech-bubble">جاري تحضير اللعبة...</div>
             <div class="mic-bar"><div id="mic-progress"></div></div>
-            
             <div id="video-holder" class="hidden">
                 <div id="player"></div>
             </div>
         </div>
         <br>
-        <button onclick="resetToLogin()" style="background-color: #7f8c8d;">خروج وعودة للرئيسية ↩️</button>
+        <button type="button" onclick="resetToLogin()" style="background-color: #7f8c8d;">خروج وعودة للرئيسية ↩️</button>
     </div>
 </div>
 
 <script>
-    // تحميل مكتبة اليوتيوب بشكل آمن
-    let tag = document.createElement('script');
-    tag.src = "https://youtube.com";
-    let firstScriptTag = document.getElementsByTagName('script')[0];
-    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
     let player;
     let config = {};
     let attempts = 0;
     let selectedVideoId = '';
     let currentChildName = '';
+
+    // إدخال مكتبة يوتيوب ديناميكياً
+    let tag = document.createElement('script');
+    tag.src = "https://youtube.com";
+    let firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+    function showInstallInstructions() {
+        alert("📲 لتثبيت هذا الموقع كتطبيق على شاشتك الرئيسية:\n\n• للآيفون (Safari): اضغط على زر 'مشاركة' المربع أسفل الشاشة ثم اختر 'إضافة إلى الشاشة الرئيسية'.\n\n• للأندرويد (Chrome): اضغط على النقاط الثلاث بالأعلى ثم اختر 'تثبيت التطبيق' أو 'إضافة إلى الشاشة الرئيسية'.");
+    }
 
     function getDeviceID() {
         let id = localStorage.getItem('device_uuid');
@@ -143,41 +145,31 @@
     }
 
     function generateAIVideos() {
-        const aiDatabase = [
-            'p7Z8mD_YV_U', 'dQw4w9WgXcQ', 'z8Wd2CkWu6s', '9bZkp7q19f0', 
-            'J7h5_G164Sw', 'K-4_Y1M29c4', 'W2ndC1k8mP0', 'L_9vCkJ84Sw'
-        ];
-        
+        const aiDatabase = ['p7Z8mD_YV_U', 'dQw4w9WgXcQ', 'z8Wd2CkWu6s', '9bZkp7q19f0'];
         const day = new Date().getDate();
-        const index1 = (day) % aiDatabase.length;
+        const index1 = day % aiDatabase.length;
         const index2 = (day + 1) % aiDatabase.length;
-        const index3 = (day + 2) % aiDatabase.length;
         
         const container = document.getElementById('video-inputs');
-        container.innerHTML = ''; 
-        
         const v1 = 'https://youtube.com' + aiDatabase[index1];
         const v2 = 'https://youtube.com' + aiDatabase[index2];
-        const v3 = 'https://youtube.com' + aiDatabase[index3];
         
         container.innerHTML = `
             <input type="text" class="yt-link" value="${v1}" oninput="checkAndAddNewInput(this)">
             <input type="text" class="yt-link" value="${v2}" oninput="checkAndAddNewInput(this)">
-            <input type="text" class="yt-link" value="${v3}" oninput="checkAndAddNewInput(this)">
         `;
-        alert("✨ تم توليد وجلب مقاطع تفاعلية جديدة ومحدثة بنجاح لليوم الحالي لضمان عدم ملل طفلك!");
+        alert("✨ تم جلب مقاطع تفاعلية محدثة تلقائياً لليوم الحالي!");
     }
 
     function checkAndAddNewInput(element) {
         let container = document.getElementById('video-inputs');
         let inputs = container.getElementsByClassName('yt-link');
         let lastInput = inputs[inputs.length - 1];
-        
         if (lastInput.value.trim() !== "") {
             let newInput = document.createElement('input');
             newInput.type = 'text';
             newInput.className = 'yt-link';
-            newInput.placeholder = 'أدخل رابط فيديو يوتيوب إضافي يدوياً';
+            newInput.placeholder = 'أدخل رابط فيديو يوتيوب إضافي';
             newInput.oninput = function() { checkAndAddNewInput(this); };
             container.appendChild(newInput);
         }
@@ -186,9 +178,8 @@
     function getYoutubeId(url) {
         const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\/\?v=|\&v=)([^#\&\?]*).*/;
         const match = url.match(regExp);
-        return (match && match.length === 11) ? match : 'dQw4w9WgXcQ';
+        return (match && match.length === 11) ? match[2] : 'dQw4w9WgXcQ';
     }
 
     function saveSettingsAndProceed() {
         config.avatars = [
-            document.getElementById('img1').value,
