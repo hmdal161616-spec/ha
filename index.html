@@ -15,7 +15,7 @@
         button { background-color: #2ed573; color: white; border: none; font-weight: bold; cursor: pointer; transition: 0.2s; max-width: 250px; }
         button:hover { background-color: #26af5f; }
         .btn-ai { background-color: #6c5ce7; max-width: 280px; }
-        .btn-install { background-color: #ffa502; max-width: 100%; color: #1a1a1a; font-size: 14px; padding: 8px 15px; margin-bottom: 15px; }
+        .btn-install { background-color: #ffa502; color: #1a1a1a; font-size: 14px; padding: 8px 15px; margin-bottom: 15px; width: 100%; max-width: 100%; }
         .hidden { display: none; }
         .avatar-selector { display: flex; justify-content: center; gap: 15px; margin: 20px 0; flex-wrap: wrap; }
         .avatar-box { border: 4px solid #444; border-radius: 50%; cursor: pointer; transition: 0.2s; }
@@ -24,7 +24,7 @@
         #game-area { position: relative; width: 100%; min-height: 400px; background: #222; border-radius: 20px; padding: 20px; margin-top: 15px; }
         #main-char { width: 150px; height: 150px; object-fit: contain; display: block; margin: 0 auto; transition: 0.4s; }
         #main-char.mini { position: absolute; bottom: 15px; right: 15px; width: 75px; height: 75px; z-index: 99; border: 3px solid #ff4757; background: #2d2d2d; border-radius: 50%; margin: 0; }
-        #speech-bubble { background: #333; padding: 15px; border-radius: 15px; font-size: 20px; font-weight: bold; margin: 15px auto; max-width: 90%; border-right: 5px solid #ff4757; }
+        #speech-bubble { background: #333; padding: 15px; border-radius: 15px; font-size: 20px; font-weight: bold; color: #fff; margin: 15px auto; max-width: 90%; border-right: 5px solid #ff4757; }
         #video-holder { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; background: #000; border-radius: 15px; margin-top: 15px; }
         #video-holder iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
         .mic-bar { width: 100%; height: 10px; background: #444; border-radius: 5px; overflow: hidden; margin-top: 15px; }
@@ -32,14 +32,10 @@
     </style>
 </head>
 <body>
-
 <div class="container">
-    <!-- زر تثبيت التطبيق في الأعلى -->
-    <button id="install-btn" class="btn-install" onclick="showInstallInstructions()">📲 اضغط هنا لتثبيت المنصة على شاشة الجوال الرئيسية</button>
-
+    <button id="install-btn" class="btn-install" onclick="showInstallInstructions()">📲 اضغط هنا لمعرفة طريقة تثبيت المنصة على الشاشة الرئيسية للجوال</button>
     <h1>🎈 منصة البطل التفاعلية</h1>
     
-    <!-- 1. شاشة تسجيل الدخول باسم الطفل -->
     <div id="login-screen">
         <p style="font-size: 17px; color: #aaa;">مرحباً بك يا بطل في عالمك التفاعلي الجديد</p>
         <div class="section" style="text-align: center;">
@@ -49,10 +45,8 @@
         </div>
     </div>
 
-    <!-- 2. لوحة تحكم ولي الأمر -->
     <div id="parent-panel" class="hidden">
         <h2 style="color: #fff; font-size: 20px;">⚙️ لوحة إعدادات الجلسة لولي الأمر</h2>
-        
         <div class="section">
             <h3>1️⃣ روابط صور الشخصيات الخمس المفضلة للطفل:</h3>
             <input type="text" id="img1" value="https://placehold.co" style="margin-bottom:5px;">
@@ -61,15 +55,13 @@
             <input type="text" id="img4" value="https://placehold.co" style="margin-bottom:5px;">
             <input type="text" id="img5" value="https://placehold.co">
         </div>
-
         <div class="section">
             <h3>2️⃣ منافذ مقاطع فيديو اليوتيوب للطفل:</h3>
-            <button type="button" onclick="generateAIVideos()" class="btn-ai" style="margin-bottom:15px;">✨ جلب مقاطع ذكية ومحدثة تلقائياً (اليوم الأول/الثاني)</button>
+            <button type="button" onclick="generateAIVideos()" class="btn-ai" style="margin-bottom:15px;">✨ جلب مقاطع ذكية ومحدثة تلقائياً</button>
             <div id="video-inputs">
                 <input type="text" class="yt-link" id="main-yt-input" placeholder="أدخل رابط فيديو يوتيوب هنا يدوياً" oninput="checkAndAddNewInput(this)">
             </div>
         </div>
-
         <div class="section">
             <h3>3️⃣ الأسئلة والألعاب بلهجتكم العامية:</h3>
             <label>سؤال الترحيب التفاعلي:</label>
@@ -79,20 +71,17 @@
             <label>الكلمة المطلوب من الطفل نطقها لتشغيل الفيديو:</label>
             <input type="text" id="a-game" value="كورة">
         </div>
-        
         <div style="text-align: center;">
             <button type="button" onclick="saveSettingsAndProceed()">حفظ الإعدادات وبدء اللعبة 🎮</button>
         </div>
     </div>
 
-    <!-- 3. واجهة اختيار الشخصية للطفل -->
     <div id="child-select-panel" class="hidden">
         <h2 id="welcome-child-title"></h2>
         <p style="font-size:18px;">اختر صديقك الكرتوني اللي تبغاه يلعب معك اليوم! 😍</p>
         <div class="avatar-selector" id="box-container"></div>
     </div>
 
-    <!-- 4. ركن اللعب والتفاعل -->
     <div id="game-panel" class="hidden">
         <div id="game-area">
             <img id="main-char" src="" alt="صديق الطفل">
@@ -106,7 +95,6 @@
         <button type="button" onclick="resetToLogin()" style="background-color: #7f8c8d;">خروج وعودة للرئيسية ↩️</button>
     </div>
 </div>
-
 <script>
     let player;
     let config = {};
@@ -114,14 +102,17 @@
     let selectedVideoId = '';
     let currentChildName = '';
 
-    // إدخال مكتبة يوتيوب ديناميكياً
     let tag = document.createElement('script');
     tag.src = "https://youtube.com";
     let firstScriptTag = document.getElementsByTagName('script')[0];
-    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+    if (firstScriptTag) {
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+    } else {
+        document.head.appendChild(tag);
+    }
 
     function showInstallInstructions() {
-        alert("📲 لتثبيت هذا الموقع كتطبيق على شاشتك الرئيسية:\n\n• للآيفون (Safari): اضغط على زر 'مشاركة' المربع أسفل الشاشة ثم اختر 'إضافة إلى الشاشة الرئيسية'.\n\n• للأندرويد (Chrome): اضغط على النقاط الثلاث بالأعلى ثم اختر 'تثبيت التطبيق' أو 'إضافة إلى الشاشة الرئيسية'.");
+        alert("📲 لتثبيت هذا الموقع كتطبيق على شاشتك الرئيسية:\n\n• للآيفون (Safari): اضغط على زر 'مشاركة' (المربع والسهم بأسفل المتصفح) ثم اختر 'إضافة إلى الشاشة الرئيسية'.\n\n• للأندرويد (Chrome): اضغط على النقاط الثلاث بالأعلى ثم اختر 'تثبيت التطبيق' أو 'إضافة إلى الشاشة الرئيسية'.");
     }
 
     function getDeviceID() {
@@ -158,7 +149,7 @@
             <input type="text" class="yt-link" value="${v1}" oninput="checkAndAddNewInput(this)">
             <input type="text" class="yt-link" value="${v2}" oninput="checkAndAddNewInput(this)">
         `;
-        alert("✨ تم جلب مقاطع تفاعلية محدثة تلقائياً لليوم الحالي!");
+        alert("✨ تم جلب مقاطع تفاعلية محدثة تلقائياً لليوم الحالي لضمان عدم الملل!");
     }
 
     function checkAndAddNewInput(element) {
@@ -183,3 +174,138 @@
 
     function saveSettingsAndProceed() {
         config.avatars = [
+            document.getElementById('img1').value,
+            document.getElementById('img2').value,
+            document.getElementById('img3').value,
+            document.getElementById('img4').value,
+            document.getElementById('img5').value
+        ];
+
+        config.videos = [];
+        let links = document.getElementsByClassName('yt-link');
+        for(let l of links) {
+            if(l.value.trim()) config.videos.push(getYoutubeId(l.value));
+        }
+        if(config.videos.length === 0) config.videos.push('dQw4w9WgXcQ');
+
+        config.qWelcome = document.getElementById('q-welcome').value;
+        config.qGame = document.getElementById('q-game').value;
+        config.aGame = document.getElementById('a-game').value;
+
+        localStorage.setItem(getDeviceID() + '_config', JSON.stringify(config));
+
+        document.getElementById('parent-panel').classList.add('hidden');
+        document.getElementById('child-select-panel').classList.remove('hidden');
+        document.getElementById('welcome-child-title').innerText = "أهلاً بك يا بطل يا " + currentChildName + "! ✨";
+
+        let boxHtml = '';
+        config.avatars.forEach((url) => {
+            boxHtml += `<div class="avatar-box" onclick="startChildGame('${url}')"><img src="${url}" onerror="this.src='https://placehold.co'"></div>`;
+        });
+        document.getElementById('box-container').innerHTML = boxHtml;
+    }
+
+    function startChildGame(avatarUrl) {
+        document.getElementById('child-select-panel').classList.add('hidden');
+        document.getElementById('game-panel').classList.remove('hidden');
+        document.getElementById('main-char').src = avatarUrl;
+        document.getElementById('main-char').classList.remove('mini');
+        document.getElementById('video-holder').classList.add('hidden');
+
+        selectedVideoId = config.videos[Math.floor(Math.random() * config.videos.length)];
+
+        if (player && typeof player.loadVideoById === 'function') {
+            player.loadVideoById(selectedVideoId);
+            player.stopVideo();
+            startWelcomeStep();
+        } else {
+            player = new YT.Player('player', {
+                height: '100%',
+                width: '100%',
+                videoId: selectedVideoId,
+                playerVars: { 'autoplay': 0, 'controls': 1 },
+                events: { 'onReady': startWelcomeStep }
+            });
+        }
+    }
+
+    function speak(text, callback) {
+        document.getElementById('speech-bubble').innerText = text;
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'ar-SA';
+        utterance.rate = 0.85;
+        utterance.onend = callback;
+        window.speechSynthesis.speak(utterance);
+    }
+
+    function startWelcomeStep() {
+        attempts = 0;
+        speak(config.qWelcome, () => {
+            listenToChild(() => { startGameStep(); }, () => { startGameStep(); });
+        });
+    }
+
+    function startGameStep() {
+        speak(config.qGame, () => {
+            listenToChild((speech) => {
+                if(speech.includes(config.aGame) || speech.length > 0) {
+                    celebrateAndPlay();
+                } else {
+                    handleFailure();
+                }
+            }, () => { handleFailure(); });
+        });
+    }
+
+    function handleFailure() {
+        attempts++;
+        if(attempts >= 3) {
+            speak("ممتاز البطل حاول! هذي هي " + config.aGame + " يلا نشوف الكرتون سوا!", () => {
+                celebrateAndPlay();
+            });
+        } else {
+            speak("اممم، ما سمعتك زين يا بطل، حاول مرة ثانية؟", () => { startGameStep(); });
+        }
+    }
+
+    function celebrateAndPlay() {
+        speak("وااو! أنت فنان وممتاز! شوف المكافأة حقتك!", () => {
+            document.getElementById('video-holder').classList.remove('hidden');
+            document.getElementById('main-char').classList.add('mini');
+            if(player && typeof player.playVideo === 'function') {
+                player.playVideo();
+            }
+        });
+    }
+
+    function listenToChild(onSuccess, onError) {
+        document.getElementById('mic-progress').style.width = '100%';
+        let SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if(SpeechRecognition) {
+            let recognition = new SpeechRecognition();
+            recognition.lang = 'ar-SA';
+            recognition.continuous = false;
+            recognition.interimResults = false;
+            recognition.maxAlternatives = 1;
+            recognition.start();
+            recognition.onresult = function(event) {
+                let result = event.results.transcript.toLowerCase();
+                document.getElementById('mic-progress').style.width = '0%';
+                onSuccess(result);
+            };
+            recognition.onerror = function() { document.getElementById('mic-progress').style.width = '0%'; onError(); };
+            recognition.onend = function() { document.getElementById('mic-progress').style.width = '0%'; };
+        } else {
+            setTimeout(() => { document.getElementById('mic-progress').style.width = '0%'; onSuccess("صوت"); }, 2500);
+        }
+    }
+
+    function resetToLogin() {
+        if(player && typeof player.stopVideo === 'function') player.stopVideo();
+        document.getElementById('game-panel').classList.add('hidden');
+        document.getElementById('login-screen').classList.remove('hidden');
+        document.getElementById('child-name').value = '';
+    }
+</script>
+</body>
+</html>
