@@ -3,28 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة البطل التفاعلية</title>
+    <title>منصة البطل التفاعلية المحدثة</title>
     <style>
         * { box-sizing: border-box; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #1a1a1a; text-align: center; margin: 0; padding: 15px; color: #ffffff; }
-        .container { max-width: 800px; margin: 10px auto; background: #2d2d2d; padding: 25px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); border: 1px solid #444; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #121212; text-align: center; margin: 0; padding: 15px; color: #ffffff; }
+        .container { max-width: 800px; margin: 10px auto; background: #1e1e1e; padding: 25px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 1px solid #333; }
         h1 { color: #ff4757; font-size: 26px; margin-bottom: 5px; }
-        .section { background: #383838; padding: 15px; border-radius: 15px; margin: 15px 0; text-align: right; border: 1px solid #444; }
-        input, button { padding: 12px; font-size: 16px; border-radius: 10px; border: 2px solid #555; margin: 5px; width: 100%; max-width: 300px; background: #222; color: #fff; }
-        input[type="text"] { width: 100%; max-width: 100%; background: #222; }
-        button { background-color: #2ed573; color: white; border: none; font-weight: bold; cursor: pointer; transition: 0.2s; max-width: 250px; }
+        .section { background: #2a2a2a; padding: 15px; border-radius: 15px; margin: 15px 0; text-align: right; border: 1px solid #444; }
+        input, button, select { padding: 12px; font-size: 16px; border-radius: 10px; border: 1px solid #555; margin: 5px; background: #333; color: #fff; width: 100%; }
+        input[type="text"], input[type="file"] { background: #222; }
+        button { background-color: #2ed573; color: white; border: none; font-weight: bold; cursor: pointer; transition: 0.2s; width: auto; min-width: 150px; }
         button:hover { background-color: #26af5f; }
-        .btn-ai { background-color: #6c5ce7; max-width: 280px; }
-        .btn-install { background-color: #ffa502; color: #1a1a1a; font-size: 14px; padding: 8px 15px; margin-bottom: 15px; width: 100%; max-width: 100%; }
+        .btn-ai { background-color: #6c5ce7; }
+        .btn-add { background-color: #1e90ff; padding: 5px 15px; min-width: 50px; font-size: 20px; }
+        .btn-rec { background-color: #ffa502; color: #000; font-size: 14px; padding: 8px; }
+        .btn-install { background-color: #ffa502; color: #1a1a1a; font-size: 14px; padding: 8px 15px; margin-bottom: 15px; width: 100%; }
         .hidden { display: none; }
+        .dynamic-item { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
         .avatar-selector { display: flex; justify-content: center; gap: 15px; margin: 20px 0; flex-wrap: wrap; }
-        .avatar-box { border: 4px solid #444; border-radius: 50%; cursor: pointer; transition: 0.2s; }
-        .avatar-box:hover { transform: scale(1.05); border-color: #ff4757; }
-        .avatar-box img { width: 90px; height: 90px; border-radius: 50%; object-fit: cover; }
-        #game-area { position: relative; width: 100%; min-height: 400px; background: #222; border-radius: 20px; padding: 20px; margin-top: 15px; }
-        #main-char { width: 150px; height: 150px; object-fit: contain; display: block; margin: 0 auto; transition: 0.4s; }
-        #main-char.mini { position: absolute; bottom: 15px; right: 15px; width: 75px; height: 75px; z-index: 99; border: 3px solid #ff4757; background: #2d2d2d; border-radius: 50%; margin: 0; }
-        #speech-bubble { background: #333; padding: 15px; border-radius: 15px; font-size: 20px; font-weight: bold; color: #fff; margin: 15px auto; max-width: 90%; border-right: 5px solid #ff4757; }
+        .avatar-box { border: 4px solid #444; border-radius: 50%; cursor: pointer; transition: 0.2s; background: #333; overflow: hidden; width: 95px; height: 95px; }
+        .avatar-box img { width: 100%; height: 100%; object-fit: cover; }
+        #game-area { position: relative; width: 100%; min-height: 400px; background: #151515; border-radius: 20px; padding: 20px; margin-top: 15px; }
+        #main-char { width: 150px; height: 150px; object-fit: contain; display: block; margin: 0 auto; transition: 0.4s; border-radius: 50%; }
+        #main-char.mini { position: absolute; bottom: 15px; right: 15px; width: 75px; height: 75px; z-index: 99; border: 3px solid #ff4757; background: #2d2d2d; }
+        #speech-bubble { background: #2a2a2a; padding: 15px; border-radius: 15px; font-size: 22px; font-weight: bold; color: #fff; margin: 15px auto; max-width: 90%; border-right: 5px solid #ff4757; }
         #video-holder { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; background: #000; border-radius: 15px; margin-top: 15px; }
         #video-holder iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
         .mic-bar { width: 100%; height: 10px; background: #444; border-radius: 5px; overflow: hidden; margin-top: 15px; }
@@ -33,9 +35,10 @@
 </head>
 <body>
 <div class="container">
-    <button id="install-btn" class="btn-install" onclick="showInstallInstructions()">📲 اضغط هنا لمعرفة طريقة تثبيت المنصة على الشاشة الرئيسية للجوال</button>
+    <button id="install-btn" class="btn-install" onclick="showInstallInstructions()">📲 اضغط هنا لمعرفة طريقة تثبيت المنصة على شاشة الجوال الرئيسية</button>
     <h1>🎈 منصة البطل التفاعلية</h1>
     
+    <!-- 1. شاشة تسجيل الدخول باسم الطفل -->
     <div id="login-screen">
         <p style="font-size: 17px; color: #aaa;">مرحباً بك يا بطل في عالمك التفاعلي الجديد</p>
         <div class="section" style="text-align: center;">
@@ -45,43 +48,50 @@
         </div>
     </div>
 
+    <!-- 2. لوحة تحكم ولي الأمر -->
     <div id="parent-panel" class="hidden">
-        <h2 style="color: #fff; font-size: 20px;">⚙️ لوحة إعدادات الجلسة لولي الأمر</h2>
+        <h2 style="color: #fff; font-size: 20px;">⚙️ لوحة إعدادات الجلسة والذاكرة الدائمة</h2>
+        
         <div class="section">
-            <h3>1️⃣ روابط صور الشخصيات الخمس المفضلة للطفل:</h3>
-            <input type="text" id="img1" value="https://placehold.co" style="margin-bottom:5px;">
-            <input type="text" id="img2" value="https://placehold.co" style="margin-bottom:5px;">
-            <input type="text" id="img3" value="https://placehold.co" style="margin-bottom:5px;">
-            <input type="text" id="img4" value="https://placehold.co" style="margin-bottom:5px;">
-            <input type="text" id="img5" value="https://placehold.co">
+            <h3>1️⃣ اختر صور الشخصيات الخمس المفضلة للطفل من استوديو جهازك مباشرة:</h3>
+            <input type="file" id="file1" accept="image/*" style="margin-bottom:5px;">
+            <input type="file" id="file2" accept="image/*" style="margin-bottom:5px;">
+            <input type="file" id="file3" accept="image/*" style="margin-bottom:5px;">
+            <input type="file" id="file4" accept="image/*" style="margin-bottom:5px;">
+            <input type="file" id="file5" accept="image/*">
         </div>
+
         <div class="section">
-            <h3>2️⃣ منافذ مقاطع فيديو اليوتيوب للطفل:</h3>
-            <button type="button" onclick="generateAIVideos()" class="btn-ai" style="margin-bottom:15px;">✨ جلب مقاطع ذكية ومحدثة تلقائياً</button>
+            <h3>2️⃣ منافذ مقاطع فيديو اليوتيوب (اضغط + لإضافة حتى 15 مقطعاً):</h3>
             <div id="video-inputs">
-                <input type="text" class="yt-link" id="main-yt-input" placeholder="أدخل رابط فيديو يوتيوب هنا يدوياً" oninput="checkAndAddNewInput(this)">
+                <div class="dynamic-item">
+                    <input type="text" class="yt-link" placeholder="أدخل رابط فيديو يوتيوب هنا يدوياً">
+                </div>
             </div>
+            <button type="button" class="btn-add" onclick="addVideoField()">+</button>
         </div>
+
         <div class="section">
-            <h3>3️⃣ الأسئلة والألعاب بلهجتكم العامية:</h3>
-            <label>سؤال الترحيب التفاعلي:</label>
-            <input type="text" id="q-welcome" value="هلا يا بطل! منور الموقع.. كيف حالك اليوم؟"><br><br>
-            <label>سؤال اللعبة التفاعلية للجماد/الألوان:</label>
-            <input type="text" id="q-game" value="شوف هذي الكورة اللي قدامك.. وش هذي؟ قول كورة"><br><br>
-            <label>الكلمة المطلوب من الطفل نطقها لتشغيل الفيديو:</label>
-            <input type="text" id="a-game" value="كورة">
+            <h3>3️⃣ الأسئلة التفاعلية وتسجيل الصوت (اضغط + لإضافة حتى 10 أسئلة أو أكثر):</h3>
+            <div id="questions-container">
+                <!-- سيتم توليد خانات الأسئلة هنا ديناميكياً -->
+            </div>
+            <button type="button" class="btn-add" onclick="addQuestionField()">+</button>
         </div>
-        <div style="text-align: center;">
-            <button type="button" onclick="saveSettingsAndProceed()">حفظ الإعدادات وبدء اللعبة 🎮</button>
+        
+        <div style="text-align: center; margin-top:20px;">
+            <button type="button" onclick="saveSettingsAndProceed()" style="font-size:18px; padding:15px 30px;">حفظ الإعدادات وبدء اللعبة 🎮</button>
         </div>
     </div>
 
+    <!-- 3. واجهة اختيار الشخصية للطفل -->
     <div id="child-select-panel" class="hidden">
         <h2 id="welcome-child-title"></h2>
         <p style="font-size:18px;">اختر صديقك الكرتوني اللي تبغاه يلعب معك اليوم! 😍</p>
         <div class="avatar-selector" id="box-container"></div>
     </div>
 
+    <!-- 4. ركن اللعب والتفاعل سريعة كـ البرق -->
     <div id="game-panel" class="hidden">
         <div id="game-area">
             <img id="main-char" src="" alt="صديق الطفل">
@@ -94,143 +104,198 @@
         <br>
         <button type="button" onclick="resetToLogin()" style="background-color: #7f8c8d;">خروج وعودة للرئيسية ↩️</button>
     </div>
-</div>
-<script>
+</div><script>
     let player;
-    let config = {};
-    let attempts = 0;
-    let selectedVideoId = '';
+    let config = { avatars: [], videos: [], questions: [] };
     let currentChildName = '';
-
-    let tag = document.createElement('script');
-    tag.src = "https://youtube.com";
-    let firstScriptTag = document.getElementsByTagName('script')[0];
-    if (firstScriptTag) {
-        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-    } else {
-        document.head.appendChild(tag);
-    }
+    let currentQuestionIndex = 0;
+    let attempts = 0;
+    let mediaRecorders = {};
+    let recordedAudios = {};
 
     function showInstallInstructions() {
-        alert("📲 لتثبيت هذا الموقع كتطبيق على شاشتك الرئيسية:\n\n• للآيفون (Safari): اضغط على زر 'مشاركة' (المربع والسهم بأسفل المتصفح) ثم اختر 'إضافة إلى الشاشة الرئيسية'.\n\n• للأندرويد (Chrome): اضغط على النقاط الثلاث بالأعلى ثم اختر 'تثبيت التطبيق' أو 'إضافة إلى الشاشة الرئيسية'.");
-    }
-
-    function getDeviceID() {
-        let id = localStorage.getItem('device_uuid');
-        if (!id) {
-            id = 'dev_' + Math.random().toString(36).substr(2, 9);
-            localStorage.setItem('device_uuid', id);
-        }
-        return id;
+        alert("📲 لتثبيت هذا الموقع كتطبيق على شاشتك الرئيسية:\n\n• للآيفون (Safari): اضغط على زر 'مشاركة' (المربع والسهم بأسفل المتصفح) ثم اختر 'إضافة إلى الشاشة الرئيسية'.\n\n• للأندرويد (Chrome): اضغط على النقاط الثلاث بالأعلى ثم اختر 'تثبيت التطبيق'.");
     }
 
     function handleLogin() {
         const nameInput = document.getElementById('child-name').value.trim();
-        if (!nameInput) {
-            alert("فضلاً اكتب اسم الطفل أولاً");
-            return;
-        }
+        if (!nameInput) { alert("فضلاً اكتب اسم الطفل أولاً"); return; }
         currentChildName = nameInput;
         document.getElementById('login-screen').classList.add('hidden');
         document.getElementById('parent-panel').classList.remove('hidden');
+        loadSavedSettings();
     }
 
-    function generateAIVideos() {
-        const aiDatabase = ['p7Z8mD_YV_U', 'dQw4w9WgXcQ', 'z8Wd2CkWu6s', '9bZkp7q19f0'];
-        const day = new Date().getDate();
-        const index1 = day % aiDatabase.length;
-        const index2 = (day + 1) % aiDatabase.length;
-        
-        const container = document.getElementById('video-inputs');
-        const v1 = 'https://youtube.com' + aiDatabase[index1];
-        const v2 = 'https://youtube.com' + aiDatabase[index2];
-        
-        container.innerHTML = `
-            <input type="text" class="yt-link" value="${v1}" oninput="checkAndAddNewInput(this)">
-            <input type="text" class="yt-link" value="${v2}" oninput="checkAndAddNewInput(this)">
-        `;
-        alert("✨ تم جلب مقاطع تفاعلية محدثة تلقائياً لليوم الحالي لضمان عدم الملل!");
-    }
-
-    function checkAndAddNewInput(element) {
+    function addVideoField(value = '') {
+        let links = document.getElementsByClassName('yt-link');
+        if (links.length >= 15) { alert("الحد الأقصى هو 15 مقطعاً"); return; }
         let container = document.getElementById('video-inputs');
-        let inputs = container.getElementsByClassName('yt-link');
-        let lastInput = inputs[inputs.length - 1];
-        if (lastInput.value.trim() !== "") {
-            let newInput = document.createElement('input');
-            newInput.type = 'text';
-            newInput.className = 'yt-link';
-            newInput.placeholder = 'أدخل رابط فيديو يوتيوب إضافي';
-            newInput.oninput = function() { checkAndAddNewInput(this); };
-            container.appendChild(newInput);
+        let div = document.createElement('div');
+        div.className = 'dynamic-item';
+        div.innerHTML = `<input type="text" class="yt-link" value="${value}" placeholder="أدخل رابط فيديو يوتيوب إضافي">`;
+        container.appendChild(div);
+    }
+
+    function addQuestionField(qText = '', aText = '', audioKey = '') {
+        let container = document.getElementById('questions-container');
+        let count = container.children.length;
+        if (count >= 15) { alert("تم الوصول للحد الأقصى للأسئلة"); return; }
+        
+        let div = document.createElement('div');
+        div.className = 'section';
+        div.style.background = '#333';
+        div.innerHTML = `
+            <label style="font-weight:bold;">سؤال تفاعلي ${count + 1}:</label>
+            <input type="text" class="q-text" value="${qText || 'وش هذا يا بطل؟'}" placeholder="اكتب السؤال بالعامية">
+            <label>الكلمة المطلوب نطقها من الطفل:</label>
+            <input type="text" class="a-text" value="${aText || 'كورة'}" placeholder="الكلمة المستهدفة">
+            <button type="button" class="btn-rec" id="rec-btn-${count}" onclick="toggleRecording(${count})">🎙️ سجل بصوت الأب/الأم (اختياري)</button>
+            <span id="rec-status-${count}" style="font-size:12px; color:#ffa502; display:block; margin-top:5px;"></span>
+        `;
+        container.appendChild(div);
+        if (audioKey) recordedAudios[count] = audioKey;
+    }
+
+    function toggleRecording(index) {
+        let btn = document.getElementById(`rec-btn-${index}`);
+        let status = document.getElementById(`rec-status-${index}`);
+        
+        if (mediaRecorders[index] && mediaRecorders[index].state === "recording") {
+            mediaRecorders[index].stop();
+            btn.innerText = "🎙️ سجل بصوت الأب/الأم (اختياري)";
+            return;
+        }
+
+        navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+            let mediaRecorder = new MediaRecorder(stream);
+            mediaRecorders[index] = mediaRecorder;
+            let chunks = [];
+            
+            mediaRecorder.ondataavailable = e => chunks.push(e.data);
+            mediaRecorder.onstop = () => {
+                let blob = new Blob(chunks, { type: 'audio/ogg; codecs=opus' });
+                let reader = new FileReader();
+                reader.readAsDataURL(blob);
+                reader.onloadend = () => {
+                    let base64String = reader.result;
+                    recordedAudios[index] = base64String;
+                    status.innerText = "✅ تم تسجيل وحفظ الصوت البشري بنجاح!";
+                }
+            };
+            
+            mediaRecorder.start();
+            btn.innerText = "🛑 إيقاف التسجيل وحفظ الصوت";
+            status.innerText = "جاري التسجيل الآن... تحدث بالعامية";
+        }).catch(() => { alert("يرجى تفعيل إذن الميكروفون للتسجيل"); });
+    }
+</script><script>
+    function loadSavedSettings() {
+        let saved = localStorage.getItem(currentChildName + '_hero_config');
+        document.getElementById('questions-container').innerHTML = '';
+        document.getElementById('video-inputs').innerHTML = '';
+        
+        if (saved) {
+            let data = JSON.parse(saved);
+            if (data.videos && data.videos.length > 0) {
+                data.videos.forEach(v => addVideoField('https://youtube.com' + v));
+            } else { addVideoField(); }
+            
+            if (data.questions && data.questions.length > 0) {
+                data.questions.forEach((q, idx) => addQuestionField(q.q, q.a, q.audio));
+            } else { for(let i=0; i<3; i++) addQuestionField(); }
+            alert("✨ تم استرجاع خيارات الطفل المحفوظة من اليوم السابق تلقائياً!");
+        } else {
+            addVideoField();
+            for(let i=0; i<3; i++) addQuestionField();
         }
     }
 
-    function getYoutubeId(url) {
-        const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\/\?v=|\&v=)([^#\&\?]*).*/;
-        const match = url.match(regExp);
-        return (match && match.length === 11) ? match[2] : 'dQw4w9WgXcQ';
+    function convertFileToBase64(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = error => reject(error);
+        });
     }
 
-    function saveSettingsAndProceed() {
-        config.avatars = [
-            document.getElementById('img1').value,
-            document.getElementById('img2').value,
-            document.getElementById('img3').value,
-            document.getElementById('img4').value,
-            document.getElementById('img5').value
-        ];
-
+    async function saveSettingsAndProceed() {
         config.videos = [];
         let links = document.getElementsByClassName('yt-link');
         for(let l of links) {
-            if(l.value.trim()) config.videos.push(getYoutubeId(l.value));
+            if(l.value.trim()) {
+                const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\/\?v=|\&v=)([^#\&\?]*).*/;
+                const match = l.value.match(regExp);
+                config.videos.push((match && match[2].length === 11) ? match[2] : 'dQw4w9WgXcQ');
+            }
         }
         if(config.videos.length === 0) config.videos.push('dQw4w9WgXcQ');
 
-        config.qWelcome = document.getElementById('q-welcome').value;
-        config.qGame = document.getElementById('q-game').value;
-        config.aGame = document.getElementById('a-game').value;
+        config.questions = [];
+        let qTexts = document.getElementsByClassName('q-text');
+        let aTexts = document.getElementsByClassName('a-text');
+        for (let i = 0; i < qTexts.length; i++) {
+            if (qTexts[i].value.trim()) {
+                config.questions.push({
+                    q: qTexts[i].value.trim(),
+                    a: aTexts[i].value.trim(),
+                    audio: recordedAudios[i] || ""
+                });
+            }
+        }
 
-        localStorage.setItem(getDeviceID() + '_config', JSON.stringify(config));
+        config.avatars = [];
+        for (let i = 1; i <= 5; i++) {
+            let fileInput = document.getElementById('file' + i);
+            if (fileInput.files && fileInput.files[0]) {
+                let base64 = await convertFileToBase64(fileInput.files[0]);
+                config.avatars.push(base64);
+            } else {
+                config.avatars.push('https://placehold.co' + i);
+            }
+        }
+
+        localStorage.setItem(currentChildName + '_hero_config', JSON.stringify(config));
 
         document.getElementById('parent-panel').classList.add('hidden');
         document.getElementById('child-select-panel').classList.remove('hidden');
-        document.getElementById('welcome-child-title').innerText = "أهلاً بك يا بطل يا " + currentChildName + "! ✨";
+        document.getElementById('welcome-child-title').innerText = `أهلاً بك يا بطل يا ${currentChildName}! ✨`;
 
         let boxHtml = '';
-        config.avatars.forEach((url) => {
-            boxHtml += `<div class="avatar-box" onclick="startChildGame('${url}')"><img src="${url}" onerror="this.src='https://placehold.co'"></div>`;
+        config.avatars.forEach((src) => {
+            boxHtml += `<div class="avatar-box" onclick="startChildGame('${src}')"><img src="${src}"></div>`;
         });
         document.getElementById('box-container').innerHTML = boxHtml;
     }
 
-    function startChildGame(avatarUrl) {
+    function startChildGame(avatarSrc) {
         document.getElementById('child-select-panel').classList.add('hidden');
         document.getElementById('game-panel').classList.remove('hidden');
-        document.getElementById('main-char').src = avatarUrl;
+        document.getElementById('main-char').src = avatarSrc;
         document.getElementById('main-char').classList.remove('mini');
         document.getElementById('video-holder').classList.add('hidden');
-
+        currentQuestionIndex = 0;
+        
         selectedVideoId = config.videos[Math.floor(Math.random() * config.videos.length)];
+        
+        let iframeContainer = document.getElementById('video-holder');
+        iframeContainer.innerHTML = `<iframe id="yt-player-frame" src="https://youtube.com{selectedVideoId}?enablejsapi=1&controls=1" allow="autoplay"></iframe>`;
+        
+        setTimeout(() => { startQuestionStep(); }, 300); // الانتقال السريع جداً كالبرق
+    }
 
-        if (player && typeof player.loadVideoById === 'function') {
-            player.loadVideoById(selectedVideoId);
-            player.stopVideo();
-            startWelcomeStep();
+    function speak(text, audioBase64, callback) {
+        document.getElementById('speech-bubble').innerText = text;
+        if (audioBase64) {
+            let audio = new Audio(audioBase64);
+            audio.onended = callback;
+            audio.play().catch(() => { useFallbackTTS(text, callback); });
         } else {
-            player = new YT.Player('player', {
-                height: '100%',
-                width: '100%',
-                videoId: selectedVideoId,
-                playerVars: { 'autoplay': 0, 'controls': 1 },
-                events: { 'onReady': startWelcomeStep }
-            });
+            useFallbackTTS(text, callback);
         }
     }
 
-    function speak(text, callback) {
-        document.getElementById('speech-bubble').innerText = text;
+    function useFallbackTTS(text, callback) {
         const utterance = new SpeechSynthesisUtterance(text);
         utterance.lang = 'ar-SA';
         utterance.rate = 0.85;
@@ -238,18 +303,18 @@
         window.speechSynthesis.speak(utterance);
     }
 
-    function startWelcomeStep() {
+    function startQuestionStep() {
+        if (currentQuestionIndex >= config.questions.length) {
+            celebrateAndPlay();
+            return;
+        }
         attempts = 0;
-        speak(config.qWelcome, () => {
-            listenToChild(() => { startGameStep(); }, () => { startGameStep(); });
-        });
-    }
-
-    function startGameStep() {
-        speak(config.qGame, () => {
+        let currentQ = config.questions[currentQuestionIndex];
+        speak(currentQ.q, currentQ.audio, () => {
             listenToChild((speech) => {
-                if(speech.includes(config.aGame) || speech.length > 0) {
-                    celebrateAndPlay();
+                if (speech.includes(currentQ.a) || speech.length > 0) {
+                    currentQuestionIndex++;
+                    startQuestionStep();
                 } else {
                     handleFailure();
                 }
@@ -259,49 +324,53 @@
 
     function handleFailure() {
         attempts++;
-        if(attempts >= 3) {
-            speak("ممتاز البطل حاول! هذي هي " + config.aGame + " يلا نشوف الكرتون سوا!", () => {
-                celebrateAndPlay();
+        let currentQ = config.questions[currentQuestionIndex];
+        if (attempts >= 3) {
+            speak("ممتاز يا بطل حاولت! هذي هي " + currentQ.a, "", () => {
+                currentQuestionIndex++;
+                startQuestionStep();
             });
         } else {
-            speak("اممم، ما سمعتك زين يا بطل، حاول مرة ثانية؟", () => { startGameStep(); });
+            speak("ما سمعتك زين يا بطل، حاول مرة ثانية؟", "", () => {
+                speak(currentQ.q, currentQ.audio, () => {
+                    listenToChild((speech) => {
+                        if (speech.includes(currentQ.a) || speech.length > 0) {
+                            currentQuestionIndex++;
+                            startQuestionStep();
+                        } else { handleFailure(); }
+                    }, () => { handleFailure(); });
+                });
+            });
         }
     }
 
     function celebrateAndPlay() {
-        speak("وااو! أنت فنان وممتاز! شوف المكافأة حقتك!", () => {
+        speak("وااو! أنت فنان وممتاز وخلصت كل الأسئلة! شوف الكرتون حقك!", "", () => {
             document.getElementById('video-holder').classList.remove('hidden');
             document.getElementById('main-char').classList.add('mini');
-            if(player && typeof player.playVideo === 'function') {
-                player.playVideo();
-            }
+            let iframe = document.getElementById('yt-player-frame');
+            iframe.src += "&autoplay=1"; // تشغيل الفيديو فوراً وبسرعة فائقة
         });
     }
 
     function listenToChild(onSuccess, onError) {
         document.getElementById('mic-progress').style.width = '100%';
         let SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-        if(SpeechRecognition) {
+        if (SpeechRecognition) {
             let recognition = new SpeechRecognition();
             recognition.lang = 'ar-SA';
-            recognition.continuous = false;
-            recognition.interimResults = false;
-            recognition.maxAlternatives = 1;
             recognition.start();
-            recognition.onresult = function(event) {
-                let result = event.results.transcript.toLowerCase();
+            recognition.onresult = function(e) {
                 document.getElementById('mic-progress').style.width = '0%';
-                onSuccess(result);
+                onSuccess(e.results[0][0].transcript.toLowerCase());
             };
             recognition.onerror = function() { document.getElementById('mic-progress').style.width = '0%'; onError(); };
-            recognition.onend = function() { document.getElementById('mic-progress').style.width = '0%'; };
         } else {
-            setTimeout(() => { document.getElementById('mic-progress').style.width = '0%'; onSuccess("صوت"); }, 2500);
+            setTimeout(() => { document.getElementById('mic-progress').style.width = '0%'; onSuccess("تخطي_تلقائي"); }, 2000);
         }
     }
 
     function resetToLogin() {
-        if(player && typeof player.stopVideo === 'function') player.stopVideo();
         document.getElementById('game-panel').classList.add('hidden');
         document.getElementById('login-screen').classList.remove('hidden');
         document.getElementById('child-name').value = '';
