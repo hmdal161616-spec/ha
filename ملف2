@@ -1,0 +1,57 @@
+* { box-sizing: border-box; }
+body { font-family: 'Segoe UI', sans-serif; background-color: #121212; text-align: center; margin: 0; padding: 15px; color: #ffffff; overflow-x: hidden; position: relative; min-height: 100vh; }
+
+/* منظومة ملصقات الشخصيات الكرتونية المتحركة في الخلفية */
+.cartoon-bg-stickers { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 1; overflow: hidden; opacity: 0.25; }
+.sticker { position: absolute; font-size: 70px; animation: floatSticker 6s infinite alternate ease-in-out; }
+@keyframes floatSticker {
+    0% { transform: translateY(0) rotate(0deg) scale(1); }
+    100% { transform: translateY(-20px) rotate(15deg) scale(1.1); }
+}
+/* توزيع الملصقات بأماكن عشوائية مبهجة للأطفال */
+.st1 { top: 10%; left: 8%; animation-delay: 0s; }
+.st2 { top: 15%; right: 10%; animation-delay: 1s; }
+.st3 { bottom: 20%; left: 12%; animation-delay: 2s; }
+.st4 { bottom: 15%; right: 8%; animation-delay: 3s; }
+.st5 { top: 45%; left: 5%; animation-delay: 1.5s; }
+.st6 { top: 50%; right: 6%; animation-delay: 2.5s; }
+
+.container { max-width: 800px; margin: 10px auto; background: rgba(30, 30, 30, 0.9); padding: 25px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 1px solid #333; position: relative; z-index: 5; backdrop-filter: blur(5px); }
+h1 { color: #ff4757; font-size: 26px; margin-bottom: 5px; }
+.section { background: #2a2a2a; padding: 15px; border-radius: 15px; margin: 15px 0; text-align: right; border: 1px solid #444; }
+input, button, select { padding: 12px; font-size: 16px; border-radius: 10px; border: 1px solid #555; margin: 5px; background: #333; color: #fff; width: 100%; }
+input[type="text"], input[type="file"], select { background: #222; }
+button { background-color: #2ed573; color: white; border: none; font-weight: bold; cursor: pointer; transition: 0.2s; width: auto; min-width: 150px; }
+button:hover { background-color: #26af5f; }
+.btn-add { background-color: #1e90ff; padding: 5px 15px; min-width: 50px; font-size: 20px; width: auto; }
+.btn-rec { background-color: #ffa502; color: #000; font-size: 14px; padding: 8px; width: auto; }
+.btn-install { background-color: #ffa502; color: #1a1a1a; font-size: 14px; padding: 8px 15px; margin-bottom: 15px; width: 100%; }
+.hidden { display: none; }
+.dynamic-item { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.avatar-selector { display: flex; justify-content: center; gap: 15px; margin: 20px 0; flex-wrap: wrap; }
+.avatar-box { border: 4px solid #444; border-radius: 50%; cursor: pointer; transition: 0.2s; background: #333; overflow: hidden; width: 95px; height: 95px; }
+.avatar-box img { width: 100%; height: 100%; object-fit: cover; }
+#game-area { position: relative; width: 100%; min-height: 460px; background: #151515; border-radius: 20px; padding: 20px; margin-top: 15px; overflow: hidden; }
+#main-char { width: 140px; height: 140px; object-fit: contain; display: block; margin: 0 auto; transition: 0.3s; border-radius: 50%; }
+.character-moving { animation: charDance 0.5s infinite alternate ease-in-out; border: 4px solid #2ed573; }
+@keyframes charDance {
+    0% { transform: translateY(0) rotate(-3deg) scale(1); }
+    100% { transform: translateY(-12px) rotate(3deg) scale(1.05); }
+}
+#main-char.mini { position: absolute; bottom: 15px; right: 15px; width: 75px; height: 75px; z-index: 99; border: 3px solid #ff4757; background: #2d2d2d; animation: none; }
+#pointing-indicator { position: absolute; font-size: 45px; z-index: 10; top: 40%; left: 50%; transform: translateX(-50%); animation: handPush 0.6s infinite alternate ease-in-out; display: none; }
+@keyframes handPush {
+    0% { transform: translateX(-50%) translateY(0) scale(1); filter: drop-shadow(0 0 5px #ff4757); }
+    100% { transform: translateX(-50%) translateY(15px) scale(1.2); filter: drop-shadow(0 0 15px #ff4757); }
+}
+#question-image { max-width: 180px; max-height: 180px; margin: 25px auto 10px auto; display: block; border-radius: 15px; border: 4px solid #ff4757; box-shadow: 0 0 20px rgba(255, 71, 87, 0.4); background-color: #222; }
+#speech-bubble { background: #2a2a2a; padding: 15px; border-radius: 15px; font-size: 22px; font-weight: bold; color: #fff; margin: 15px auto; max-width: 90%; border-right: 5px solid #ff4757; }
+#video-holder { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; background: #000; border-radius: 15px; margin-top: 15px; }
+#video-holder iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
+.mic-bar { width: 100%; height: 10px; background: #444; border-radius: 5px; overflow: hidden; margin-top: 15px; }
+#mic-progress { width: 0%; height: 100%; background: #2ed573; transition: 0.1s; }
+.celebration-element { position: fixed; bottom: -100px; font-size: 40px; z-index: 9999; animation: floatUp 3s linear forwards; pointer-events: none; }
+@keyframes floatUp {
+    0% { transform: translateY(0) translateX(0) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(-120vh) translateX(var(--random-x)) rotate(360deg); opacity: 0; }
+}
