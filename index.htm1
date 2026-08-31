@@ -1,0 +1,1482 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>مِجداد | منصة أتمتة واتساب للأعمال</title>
+
+  <meta
+    name="description"
+    content="منصة مِجداد لإدارة شجرة الردود الآلية وواتساب للأعمال."
+  />
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Tahoma", "Arial", sans-serif;
+      background: #080d0b;
+      color: #ffffff;
+      min-height: 100vh;
+    }
+
+    button,
+    input,
+    textarea {
+      font-family: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .app {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* =========================
+       Sidebar
+    ========================= */
+
+    .sidebar {
+      width: 260px;
+      flex-shrink: 0;
+      background: #0a100e;
+      border-left: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .brand {
+      height: 80px;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .brand-logo {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #22c55e;
+      color: #000;
+      font-size: 20px;
+      font-weight: 900;
+    }
+
+    .brand-title {
+      font-weight: 800;
+      font-size: 17px;
+    }
+
+    .brand-subtitle {
+      margin-top: 3px;
+      color: #71717a;
+      font-size: 10px;
+      direction: ltr;
+    }
+
+    .navigation {
+      flex: 1;
+      padding: 16px;
+    }
+
+    .nav-item {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 13px 15px;
+      margin-bottom: 5px;
+      border: 0;
+      border-radius: 12px;
+      background: transparent;
+      color: #71717a;
+      text-align: right;
+      font-size: 14px;
+      transition: 0.2s;
+    }
+
+    .nav-item:hover {
+      background: rgba(255, 255, 255, 0.04);
+      color: #fff;
+    }
+
+    .nav-item.active {
+      background: rgba(34, 197, 94, 0.1);
+      color: #4ade80;
+      font-weight: 700;
+    }
+
+    .nav-icon {
+      width: 22px;
+      text-align: center;
+    }
+
+    .connection {
+      padding: 16px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .connection-box {
+      padding: 15px;
+      border-radius: 16px;
+      background: rgba(34, 197, 94, 0.08);
+    }
+
+    .connection-title {
+      color: #4ade80;
+      font-size: 11px;
+      margin-bottom: 8px;
+    }
+
+    .connection-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #4ade80;
+    }
+
+    /* =========================
+       Main
+    ========================= */
+
+    .main {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .header {
+      min-height: 80px;
+      padding: 15px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(10, 16, 14, 0.85);
+    }
+
+    .header-title {
+      font-size: 21px;
+      font-weight: 800;
+    }
+
+    .header-description {
+      margin-top: 5px;
+      color: #71717a;
+      font-size: 13px;
+    }
+
+    .save-button {
+      padding: 11px 18px;
+      border: 0;
+      border-radius: 12px;
+      background: #22c55e;
+      color: #000;
+      font-weight: 800;
+      transition: 0.2s;
+    }
+
+    .save-button:hover {
+      background: #4ade80;
+    }
+
+    .content {
+      padding: 32px;
+    }
+
+    /* =========================
+       Statistics
+    ========================= */
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .stat-card {
+      padding: 17px;
+      border-radius: 17px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: #0c1310;
+    }
+
+    .stat-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 15px;
+    }
+
+    .stat-title {
+      color: #71717a;
+      font-size: 11px;
+    }
+
+    .stat-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(34, 197, 94, 0.1);
+      color: #4ade80;
+    }
+
+    .stat-value {
+      font-size: 21px;
+      font-weight: 800;
+    }
+
+    /* =========================
+       Workspace
+    ========================= */
+
+    .workspace {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 380px;
+      gap: 24px;
+    }
+
+    .panel {
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 18px;
+      background: #0c1310;
+      overflow: hidden;
+    }
+
+    .panel-header {
+      padding: 19px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .panel-title {
+      font-weight: 800;
+      font-size: 15px;
+    }
+
+    .panel-description {
+      margin-top: 5px;
+      color: #71717a;
+      font-size: 11px;
+    }
+
+    .add-button {
+      padding: 9px 13px;
+      border-radius: 11px;
+      border: 1px solid rgba(34, 197, 94, 0.3);
+      background: rgba(34, 197, 94, 0.08);
+      color: #4ade80;
+      font-weight: 700;
+    }
+
+    .add-button:hover {
+      background: rgba(34, 197, 94, 0.16);
+    }
+
+    .tree {
+      padding: 19px;
+    }
+
+    /* =========================
+       Tree
+    ========================= */
+
+    .tree-level {
+      margin-top: 10px;
+    }
+
+    .tree-level:first-child {
+      margin-top: 0;
+    }
+
+    .tree-level.nested {
+      margin-right: 28px;
+    }
+
+    .tree-node {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 12px;
+      margin-bottom: 9px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.03);
+      color: #fff;
+      text-align: right;
+      transition: 0.2s;
+    }
+
+    .tree-node:hover {
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .tree-node.selected {
+      border-color: rgba(34, 197, 94, 0.5);
+      background: rgba(34, 197, 94, 0.1);
+    }
+
+    .node-icon {
+      width: 36px;
+      height: 36px;
+      flex-shrink: 0;
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(34, 197, 94, 0.12);
+      color: #4ade80;
+    }
+
+    .node-content {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .node-title {
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      font-weight: 700;
+      font-size: 13px;
+    }
+
+    .node-message {
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      margin-top: 4px;
+      color: #71717a;
+      font-size: 10px;
+    }
+
+    .node-arrow {
+      color: #52525b;
+      font-size: 18px;
+    }
+
+    /* =========================
+       Editor
+    ========================= */
+
+    .right-column {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .editor {
+      padding: 19px;
+    }
+
+    .field {
+      margin-bottom: 18px;
+    }
+
+    .field label {
+      display: block;
+      margin-bottom: 8px;
+      color: #d4d4d8;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .field input,
+    .field textarea {
+      width: 100%;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 11px;
+      background: rgba(0, 0, 0, 0.2);
+      color: #fff;
+      outline: none;
+      padding: 12px 13px;
+      font-size: 13px;
+      transition: 0.2s;
+    }
+
+    .field input:focus,
+    .field textarea:focus {
+      border-color: rgba(34, 197, 94, 0.5);
+    }
+
+    .field textarea {
+      resize: vertical;
+      min-height: 135px;
+      line-height: 1.9;
+    }
+
+    .editor-save {
+      width: 100%;
+      padding: 12px;
+      border: 0;
+      border-radius: 11px;
+      background: #fff;
+      color: #000;
+      font-weight: 800;
+    }
+
+    .editor-save:hover {
+      background: #e4e4e7;
+    }
+
+    /* =========================
+       WhatsApp Preview
+    ========================= */
+
+    .whatsapp {
+      overflow: hidden;
+      border-radius: 18px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: #111815;
+    }
+
+    .whatsapp-header {
+      padding: 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #18221e;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .whatsapp-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #22c55e;
+      color: #000;
+      font-weight: 900;
+    }
+
+    .whatsapp-name {
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .whatsapp-online {
+      margin-top: 2px;
+      color: #4ade80;
+      font-size: 9px;
+    }
+
+    .whatsapp-body {
+      min-height: 260px;
+      padding: 16px;
+      background: #0b1511;
+    }
+
+    .message {
+      max-width: 90%;
+      padding: 13px;
+      border-radius: 15px;
+      border-top-right-radius: 4px;
+      background: #1d2b25;
+      color: #f4f4f5;
+      white-space: pre-line;
+      font-size: 12px;
+      line-height: 1.9;
+    }
+
+    .message-buttons {
+      margin-top: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .message-button {
+      padding: 9px;
+      border-radius: 10px;
+      border: 1px solid rgba(34, 197, 94, 0.2);
+      background: rgba(34, 197, 94, 0.08);
+      color: #4ade80;
+      text-align: center;
+      font-size: 11px;
+    }
+
+    /* =========================
+       Integration
+    ========================= */
+
+    .integration {
+      margin-top: 24px;
+      padding: 19px;
+      border: 1px dashed rgba(34, 197, 94, 0.2);
+      border-radius: 18px;
+      background: rgba(34, 197, 94, 0.03);
+    }
+
+    .integration-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .integration-title {
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+
+    .integration-description {
+      color: #71717a;
+      font-size: 12px;
+      line-height: 1.7;
+    }
+
+    .api-badge {
+      flex-shrink: 0;
+      padding: 9px 13px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      background: rgba(0, 0, 0, 0.2);
+      color: #a1a1aa;
+      font-size: 10px;
+      direction: ltr;
+    }
+
+    /* =========================
+       Toast
+    ========================= */
+
+    .toast {
+      position: fixed;
+      left: 25px;
+      bottom: 25px;
+      padding: 13px 17px;
+      border-radius: 12px;
+      background: #22c55e;
+      color: #000;
+      font-size: 13px;
+      font-weight: 800;
+      opacity: 0;
+      transform: translateY(20px);
+      pointer-events: none;
+      transition: 0.25s;
+      z-index: 1000;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* =========================
+       Mobile
+    ========================= */
+
+    @media (max-width: 1100px) {
+      .sidebar {
+        width: 220px;
+      }
+
+      .workspace {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 800px) {
+      .app {
+        display: block;
+      }
+
+      .sidebar {
+        display: none;
+      }
+
+      .header {
+        padding: 15px 18px;
+      }
+
+      .content {
+        padding: 18px;
+      }
+
+      .stats {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .header-title {
+        font-size: 17px;
+      }
+
+      .header-description {
+        font-size: 10px;
+      }
+
+      .save-button {
+        padding: 9px 12px;
+        font-size: 11px;
+      }
+    }
+
+    @media (max-width: 500px) {
+      .stats {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .integration-content {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .api-badge {
+        width: 100%;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="app">
+
+    <!-- =========================
+         Sidebar
+    ========================== -->
+
+    <aside class="sidebar">
+
+      <div class="brand">
+        <div class="brand-logo">م</div>
+
+        <div>
+          <div class="brand-title">مِجداد</div>
+          <div class="brand-subtitle">WhatsApp Automation</div>
+        </div>
+      </div>
+
+      <nav class="navigation">
+
+        <button class="nav-item active">
+          <span class="nav-icon">⌂</span>
+          <span>الرئيسية</span>
+        </button>
+
+        <button class="nav-item">
+          <span class="nav-icon">⌘</span>
+          <span>شجرة الواتساب</span>
+        </button>
+
+        <button class="nav-item">
+          <span class="nav-icon">◉</span>
+          <span>جهات الاتصال</span>
+        </button>
+
+        <button class="nav-item">
+          <span class="nav-icon">✉</span>
+          <span>الحملات والرسائل</span>
+        </button>
+
+        <button class="nav-item">
+          <span class="nav-icon">▣</span>
+          <span>القوالب</span>
+        </button>
+
+        <button class="nav-item">
+          <span class="nav-icon">⚙</span>
+          <span>الإعدادات</span>
+        </button>
+
+      </nav>
+
+      <div class="connection">
+
+        <div class="connection-box">
+
+          <div class="connection-title">
+            حالة واتساب
+          </div>
+
+          <div class="connection-status">
+            <span class="status-dot"></span>
+            <span>متصل ويعمل</span>
+          </div>
+
+        </div>
+
+      </div>
+
+    </aside>
+
+
+    <!-- =========================
+         Main
+    ========================== -->
+
+    <main class="main">
+
+      <header class="header">
+
+        <div>
+          <h1 class="header-title">
+            شجرة الردود الآلية
+          </h1>
+
+          <p class="header-description">
+            أنشئ مسارات ذكية لعملائك على واتساب
+          </p>
+        </div>
+
+        <button
+          id="saveButton"
+          class="save-button"
+          onclick="saveChanges()"
+        >
+          حفظ التغييرات
+        </button>
+
+      </header>
+
+
+      <div class="content">
+
+        <!-- Statistics -->
+
+        <section class="stats">
+
+          <div class="stat-card">
+            <div class="stat-top">
+              <span class="stat-title">إجمالي الردود</span>
+              <span class="stat-icon">↗</span>
+            </div>
+            <div class="stat-value">12</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-top">
+              <span class="stat-title">المسارات النشطة</span>
+              <span class="stat-icon">⌁</span>
+            </div>
+            <div class="stat-value">8</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-top">
+              <span class="stat-title">الرسائل اليوم</span>
+              <span class="stat-icon">✉</span>
+            </div>
+            <div class="stat-value">1,284</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-top">
+              <span class="stat-title">نسبة التفاعل</span>
+              <span class="stat-icon">%</span>
+            </div>
+            <div class="stat-value">94%</div>
+          </div>
+
+        </section>
+
+
+        <!-- Workspace -->
+
+        <section class="workspace">
+
+          <!-- Tree -->
+
+          <div class="panel">
+
+            <div class="panel-header">
+
+              <div>
+                <div class="panel-title">
+                  بنية المحادثة
+                </div>
+
+                <div class="panel-description">
+                  اضغط على أي رد لتعديله
+                </div>
+              </div>
+
+              <button
+                class="add-button"
+                onclick="addNode()"
+              >
+                + إضافة رد
+              </button>
+
+            </div>
+
+            <div
+              id="tree"
+              class="tree"
+            ></div>
+
+          </div>
+
+
+          <!-- Right Column -->
+
+          <div class="right-column">
+
+            <!-- Editor -->
+
+            <div class="panel">
+
+              <div class="panel-header">
+
+                <div>
+                  <div class="panel-title">
+                    تعديل الرد
+                  </div>
+
+                  <div class="panel-description">
+                    عدّل بيانات العقدة المحددة
+                  </div>
+                </div>
+
+              </div>
+
+              <div class="editor">
+
+                <div class="field">
+
+                  <label>
+                    اسم الخيار
+                  </label>
+
+                  <input
+                    id="nodeTitle"
+                    type="text"
+                    placeholder="مثال: خدماتنا"
+                  />
+
+                </div>
+
+
+                <div class="field">
+
+                  <label>
+                    رسالة الواتساب
+                  </label>
+
+                  <textarea
+                    id="nodeMessage"
+                    placeholder="اكتب الرسالة التي سيستلمها العميل..."
+                  ></textarea>
+
+                </div>
+
+
+                <button
+                  class="editor-save"
+                  onclick="saveNode()"
+                >
+                  حفظ الرد
+                </button>
+
+              </div>
+
+            </div>
+
+
+            <!-- WhatsApp Preview -->
+
+            <div class="whatsapp">
+
+              <div class="whatsapp-header">
+
+                <div class="whatsapp-avatar">
+                  م
+                </div>
+
+                <div>
+                  <div class="whatsapp-name">
+                    مِجداد
+                  </div>
+
+                  <div class="whatsapp-online">
+                    متصل الآن
+                  </div>
+                </div>
+
+              </div>
+
+
+              <div class="whatsapp-body">
+
+                <div
+                  id="previewMessage"
+                  class="message"
+                ></div>
+
+                <div
+                  id="messageButtons"
+                  class="message-buttons"
+                ></div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </section>
+
+
+        <!-- Integration -->
+
+        <section class="integration">
+
+          <div class="integration-content">
+
+            <div>
+
+              <div class="integration-title">
+                🔗 ربط شجرة الواتساب
+              </div>
+
+              <div class="integration-description">
+                ضع منطق شجرة الواتساب الحقيقي داخل JavaScript
+                لربطه بهذه الواجهة وتشغيل الردود الآلية.
+              </div>
+
+            </div>
+
+            <div class="api-badge">
+              WhatsApp Business Cloud API
+            </div>
+
+          </div>
+
+        </section>
+
+      </div>
+
+    </main>
+
+  </div>
+
+
+  <!-- Toast -->
+
+  <div
+    id="toast"
+    class="toast"
+  >
+    تم حفظ التغييرات ✓
+  </div>
+
+
+  <script>
+
+    /* =========================================
+       WhatsApp Tree
+    ========================================= */
+
+    let tree = [
+      {
+        id: 1,
+        title: "القائمة الرئيسية",
+        message:
+          "مرحبًا بك في مِجداد 👋\nاختر من القائمة التالية:",
+        children: [
+          {
+            id: 2,
+            title: "خدماتنا",
+            message:
+              "اختر الخدمة التي تريد معرفة المزيد عنها.",
+            children: []
+          },
+
+          {
+            id: 3,
+            title: "الفروع",
+            message:
+              "يمكنك معرفة مواقع فروعنا من هنا.",
+            children: []
+          },
+
+          {
+            id: 4,
+            title: "التواصل مع الدعم",
+            message:
+              "سيتم تحويلك إلى فريق الدعم.",
+            children: []
+          }
+        ]
+      }
+    ];
+
+
+    let selectedNode = tree[0];
+
+
+    /* =========================================
+       DOM
+    ========================================= */
+
+    const treeElement =
+      document.getElementById("tree");
+
+    const titleInput =
+      document.getElementById("nodeTitle");
+
+    const messageInput =
+      document.getElementById("nodeMessage");
+
+    const previewMessage =
+      document.getElementById("previewMessage");
+
+    const messageButtons =
+      document.getElementById("messageButtons");
+
+
+    /* =========================================
+       Render Tree
+    ========================================= */
+
+    function renderTree() {
+
+      treeElement.innerHTML = "";
+
+      const rootLevel =
+        document.createElement("div");
+
+      rootLevel.className =
+        "tree-level";
+
+      renderNodes(
+        tree,
+        rootLevel,
+        0
+      );
+
+      treeElement.appendChild(rootLevel);
+    }
+
+
+    function renderNodes(
+      nodes,
+      container,
+      level
+    ) {
+
+      nodes.forEach(node => {
+
+        const button =
+          document.createElement("button");
+
+        button.type = "button";
+
+        button.className =
+          "tree-node" +
+          (
+            selectedNode.id === node.id
+              ? " selected"
+              : ""
+          );
+
+        button.innerHTML = `
+
+          <div class="node-icon">
+            ${level === 0 ? "⌂" : "↳"}
+          </div>
+
+          <div class="node-content">
+
+            <div class="node-title">
+              ${escapeHTML(node.title)}
+            </div>
+
+            <div class="node-message">
+              ${escapeHTML(
+                node.message.replace(/\n/g, " ")
+              )}
+            </div>
+
+          </div>
+
+          <div class="node-arrow">
+            ‹
+          </div>
+        `;
+
+
+        button.addEventListener(
+          "click",
+          () => selectNode(node)
+        );
+
+
+        container.appendChild(button);
+
+
+        if (
+          node.children &&
+          node.children.length
+        ) {
+
+          const nested =
+            document.createElement("div");
+
+          nested.className =
+            "tree-level nested";
+
+          renderNodes(
+            node.children,
+            nested,
+            level + 1
+          );
+
+          container.appendChild(nested);
+        }
+
+      });
+
+    }
+
+
+    /* =========================================
+       Select Node
+    ========================================= */
+
+    function selectNode(node) {
+
+      selectedNode = node;
+
+      titleInput.value =
+        node.title;
+
+      messageInput.value =
+        node.message;
+
+      updatePreview();
+
+      renderTree();
+    }
+
+
+    /* =========================================
+       Save Node
+    ========================================= */
+
+    function saveNode() {
+
+      selectedNode.title =
+        titleInput.value.trim() ||
+        "رد بدون اسم";
+
+      selectedNode.message =
+        messageInput.value.trim() ||
+        "لم تتم إضافة رسالة بعد.";
+
+      renderTree();
+
+      updatePreview();
+
+      showToast(
+        "تم حفظ الرد ✓"
+      );
+    }
+
+
+    /* =========================================
+       Add Node
+    ========================================= */
+
+    function addNode() {
+
+      const newNode = {
+
+        id:
+          Date.now(),
+
+        title:
+          "رد جديد",
+
+        message:
+          "اكتب رسالة الرد هنا...",
+
+        children: []
+
+      };
+
+
+      if (
+        !selectedNode.children
+      ) {
+
+        selectedNode.children = [];
+
+      }
+
+
+      selectedNode.children.push(
+        newNode
+      );
+
+
+      selectNode(
+        newNode
+      );
+
+
+      showToast(
+        "تمت إضافة رد جديد"
+      );
+    }
+
+
+    /* =========================================
+       Save Changes
+    ========================================= */
+
+    function saveChanges() {
+
+      localStorage.setItem(
+        "mijdad_whatsapp_tree",
+        JSON.stringify(tree)
+      );
+
+
+      const button =
+        document.getElementById(
+          "saveButton"
+        );
+
+
+      button.textContent =
+        "✓ تم الحفظ";
+
+
+      showToast(
+        "تم حفظ شجرة الواتساب ✓"
+      );
+
+
+      setTimeout(() => {
+
+        button.textContent =
+          "حفظ التغييرات";
+
+      }, 2000);
+
+    }
+
+
+    /* =========================================
+       Load Saved Tree
+    ========================================= */
+
+    function loadTree() {
+
+      const saved =
+        localStorage.getItem(
+          "mijdad_whatsapp_tree"
+        );
+
+
+      if (!saved) {
+
+        return;
+
+      }
+
+
+      try {
+
+        const parsed =
+          JSON.parse(saved);
+
+
+        if (
+          Array.isArray(parsed) &&
+          parsed.length
+        ) {
+
+          tree = parsed;
+
+          selectedNode =
+            tree[0];
+
+        }
+
+      } catch (error) {
+
+        console.error(
+          "تعذر تحميل البيانات:",
+          error
+        );
+
+      }
+
+    }
+
+
+    /* =========================================
+       WhatsApp Preview
+    ========================================= */
+
+    function updatePreview() {
+
+      previewMessage.textContent =
+        selectedNode.message;
+
+
+      messageButtons.innerHTML =
+        "";
+
+
+      if (
+        selectedNode.children &&
+        selectedNode.children.length
+      ) {
+
+        selectedNode.children.forEach(
+          child => {
+
+            const button =
+              document.createElement(
+                "div"
+              );
+
+            button.className =
+              "message-button";
+
+            button.textContent =
+              child.title;
+
+            messageButtons.appendChild(
+              button
+            );
+
+          }
+        );
+
+      }
+
+    }
+
+
+    /* =========================================
+       Toast
+    ========================================= */
+
+    function showToast(message) {
+
+      const toast =
+        document.getElementById(
+          "toast"
+        );
+
+      toast.textContent =
+        message;
+
+      toast.classList.add(
+        "show"
+      );
+
+
+      setTimeout(() => {
+
+        toast.classList.remove(
+          "show"
+        );
+
+      }, 2500);
+
+    }
+
+
+    /* =========================================
+       Security
+    ========================================= */
+
+    function escapeHTML(value) {
+
+      const div =
+        document.createElement(
+          "div"
+        );
+
+      div.textContent =
+        value;
+
+      return div.innerHTML;
+
+    }
+
+
+    /* =========================================
+       Navigation
+    ========================================= */
+
+    document
+      .querySelectorAll(".nav-item")
+      .forEach(item => {
+
+        item.addEventListener(
+          "click",
+          function () {
+
+            document
+              .querySelectorAll(
+                ".nav-item"
+              )
+              .forEach(
+                nav =>
+                  nav.classList.remove(
+                    "active"
+                  )
+              );
+
+
+            this.classList.add(
+              "active"
+            );
+
+          }
+        );
+
+      });
+
+
+    /* =========================================
+       Start Application
+    ========================================= */
+
+    loadTree();
+
+    renderTree();
+
+    selectNode(
+      selectedNode
+    );
+
+  </script>
+
+</body>
+</html>
