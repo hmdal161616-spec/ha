@@ -1,99 +1,229 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة البطل التفاعلية</title>
-    <!-- ربط الموقع تلقائياً بملف التصميم ليعمل بدون أي ثقل أو تعليق -->
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
+let config = { avatars: [], videos: [], questions: [], videoDuration: 60 };
+let currentChildName = '';
+let currentQuestionIndex = 0;
+let attempts = 0;
+let mediaRecorders = {};
+let recordedAudios = {};
+let questionImagesB64 = {};
+let videoTimeoutTimer;
 
-<!-- الملصقات الكرتونية العشوائية والمتحركة لخلفية صفحة الاسم لجذب الطفل -->
-<div class="cartoon-bg-stickers">
-    <div class="sticker st1">🐭</div> <!-- ميكي ماوس -->
-    <div class="sticker st2">🧽</div> <!-- سبونج بوب -->
-    <div class="sticker st3">🐱</div> <!-- توم -->
-    <div class="sticker st4">🐭</div> <!-- جيري -->
-    <div class="sticker st5">🚗</div> <!-- سيارات ديزني -->
-    <div class="sticker st6">🧸</div> <!-- دبدوب محبوب -->
-</div>
+function showInstallInstructions() {
+    alert("📲 لتثبيت هذا الموقع كتطبيق على شاشتك الرئيسية:\n\n• للآيفون (Safari): اضغط على زر 'مشاركة' أسفل الشاشة ثم اختر 'إضافة إلى الشاشة الرئيسية'.\n\n• للأندرويد (Chrome): اضغط على النقاط الثلاث بالأعلى ثم اختر 'تثبيت التطبيق'.");
+}
 
-<div class="container">
-    <button id="install-btn" class="btn-install" onclick="showInstallInstructions()">📲 اضغط هنا لمعرفة طريقة تثبيت المنصة على شاشة الجوال الرئيسية</button>
-    <h1>🎈 منصة البطل التفاعلية</h1>
+function handleLogin() {
+    const nameInput = document.getElementById('child-name').value.trim();
+    if (!nameInput) { alert("فضلاً اكتب اسم الطفل أولاً"); return; }
+    currentChildName = nameInput;
     
-    <!-- 1. شاشة تسجيل الدخول باسم الطفل المحاطة بالملصقات المبهجة -->
-    <div id="login-screen">
-        <p style="font-size: 17px; color: #aaa;">مرحباً بك يا بطل في عالمك التفاعلي الجديد</p>
-        <div class="section" style="text-align: center;">
-            <label style="font-weight: bold; display: block; margin-bottom: 10px;">اكتب اسمك هنا للدخول:</label>
-            <input type="text" id="child-name" placeholder="مثال: أحمد" style="text-align: center;"><br>
-            <button onclick="handleLogin()">دخول 🚀</button>
-        </div>
-    </div>
+    // إخفاء صفحة الاسم بالكامل وإظهار لوحة التحكم النظيفة فوراً وبسرعة البرق
+    document.getElementById('login-screen').classList.add('hidden');
+    document.getElementById('parent-panel').classList.remove('hidden');
+    loadSavedSettings();
+}
 
-    <!-- 2. لوحة تحكم ولي الأمر الدائمة -->
-    <div id="parent-panel" class="hidden">
-        <h2 style="color: #fff; font-size: 20px;">⚙️ لوحة إعدادات الجلسة والذاكرة الدائمة</h2>
+function addVideoField(value = '') {
+    let container = document.getElementById('video-inputs');
+    if (container.children.length >= 15) { alert("الحد الأقصى هو 15 مقطعاً"); return; }
+    let div = document.createElement('div');
+    div.className = 'dynamic-item';
+    div.innerHTML = `<input type="text" class="yt-link" value="${value}" placeholder="رابط فيديو يوتيوب إضافي">`;
+    container.appendChild(div);
+}
+
+function addQuestionField(qText = '', aText = '', audioKey = '', imgKey = '') {
+    let container = document.getElementById('questions-container');
+    let count = container.children.length;
+    if (count >= 15) { alert("تم الوصول للحد الأقصى للأسئلة"); return; }
+    let div = document.createElement('div');
+    div.className = 'section';
+    div.innerHTML = `
+        <label style="font-weight:bold;">سؤال تفاعلي ${count + 1}:</label>
+        <input type="text" class="q-text" value="${qText || 'وش هذا يا بطل؟'}" placeholder="اكتب السؤال بالعامية">
+        <label>الكلمة المطلوب نطقها من الطفل لإظهار المكافأة:</label>
+        <input type="text" class="a-text" value="${aText || 'كورة'}" placeholder="مثال: كورة، ماء، تفاحة">
         
-        <div class="section">
-            <h3>1️⃣ اختر صور الشخصيات الخمس المفضلة للطفل من استوديو جهازك مباشرة:</h3>
-            <input type="file" id="file1" accept="image/*" style="margin-bottom:5px;">
-            <input type="file" id="file2" accept="image/*" style="margin-bottom:5px;">
-            <input type="file" id="file3" accept="image/*" style="margin-bottom:5px;">
-            <input type="file" id="file4" accept="image/*" style="margin-bottom:5px;">
-            <input type="file" id="file5" accept="image/*">
-        </div>
-
-        <div class="section">
-            <h3>2️⃣ منافذ مقاطع فيديو اليوتيوب والتحكم بزمن المشاهدة:</h3>
-            <label style="font-weight:bold; color:#ffa502;">⏱️ حدد وقت تشغيل الفيديو وضبط سلوك الطفل:</label>
-            <select id="video-timer-select" style="margin-bottom:15px;">
-                <option value="30">30 ثانية (مشاهدة سريعة)</option>
-                <option value="60" selected>دقيقة واحدة (موصى به)</option>
-                <option value="120">دقيقتان</option>
-                <option value="180">3 دقائق</option>
-                <option value="300">5 دقائق</option>
-            </select>
-            <div id="video-inputs"></div>
-            <button type="button" class="btn-add" onclick="addVideoField()">+</button>
-        </div>
-
-        <div class="section">
-            <h3>3️⃣ الأسئلة التفاعلية (مع خيارات الاستوديو أو الجلب التلقائي الذكي):</h3>
-            <div id="questions-container"></div>
-            <button type="button" class="btn-add" onclick="addQuestionField()">+</button>
-        </div>
+        <label style="display:block; margin-top:10px; color:#1e90ff;">📸 خيار الاستوديو: ارفع صورة مخصصة لهذا الجماد (اختياري):</label>
+        <input type="file" class="q-img-file" accept="image/*" onchange="handleQuestionImage(this, ${count})">
         
-        <div style="text-align: center; margin-top:20px;">
-            <button type="button" onclick="saveSettingsAndProceed()" style="font-size:18px; padding:15px 30px;">حفظ الإعدادات وبدء اللعبة 🎮</button>
-        </div>
-    </div>
+        <button type="button" class="btn-rec" id="rec-btn-${count}" onclick="toggleRecording(${count})" style="margin-top:10px; display:block;">🎙️ سجل بصوت الأب/الأم</button>
+        <span id="rec-status-${count}" style="font-size:12px; color:#ffa502; display:block; margin-top:5px;"></span>
+    `;
+    container.appendChild(div);
+    if (audioKey) {
+        recordedAudios[count] = audioKey;
+        document.getElementById(`rec-status-${count}`).innerText = "✅ تم استرجاع التسجيل الصوتي السابق!";
+    }
+    if (imgKey) questionImagesB64[count] = imgKey;
+}
 
-    <!-- 3. واجهة اختيار الشخصية للطفل -->
-    <div id="child-select-panel" class="hidden">
-        <h2 id="welcome-child-title"></h2>
-        <p style="font-size:18px;">اختر صديقك الكرتوني اللي تبغاه يلعب معك اليوم! 😍</p>
-        <div class="avatar-selector" id="box-container"></div>
-    </div>
+async function handleQuestionImage(input, index) {
+    if (input.files && input.files[0]) {
+        let b64 = await getBase64(input.files[0]);
+        questionImagesB64[index] = b64;
+    }
+}
 
-    <!-- 4. ركن اللعب والتفاعل الحركي والمكافآت -->
-    <div id="game-panel" class="hidden">
-        <div id="game-area">
-            <img id="main-char" src="" alt="صديق الطفل">
-            <div id="pointing-indicator">👇</div>
-            <img id="question-image" class="hidden" src="" alt="صورة السؤال">
-            <div id="speech-bubble">جاري تحضير اللعبة...</div>
-            <div class="mic-bar"><div id="mic-progress"></div></div>
-            <div id="video-holder" class="hidden"></div>
-        </div>
-        <br>
-        <button type="button" onclick="resetToLogin()" style="background-color: #7f8c8d;">خروج وعودة للرئيسية ↩️</button>
-    </div>
-</div>
+function toggleRecording(index) {
+    let btn = document.getElementById(`rec-btn-${index}`);
+    let status = document.getElementById(`rec-status-${index}`);
+    if (mediaRecorders[index] && mediaRecorders[index].state === "recording") {
+        mediaRecorders[index].stop();
+        btn.innerText = "🎙️ سجل بصوت الأب/الأم";
+        return;
+    }
+    navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+        let mediaRecorder = new MediaRecorder(stream);
+        mediaRecorders[index] = mediaRecorder;
+        let chunks = [];
+        mediaRecorder.ondataavailable = e => chunks.push(e.data);
+        mediaRecorder.onstop = () => {
+            let blob = new Blob(chunks, { type: 'audio/ogg;' });
+            let reader = new FileReader();
+            reader.readAsDataURL(blob);
+            reader.onloadend = () => {
+                recordedAudios[index] = reader.result;
+                status.innerText = "✅ تم حفظ صوتك بنجاح!";
+            };
+        };
+        mediaRecorder.start();
+        btn.innerText = "🛑 حفظ التسجيل";
+        status.innerText = "جاري التسجيل الآن...";
+    }).catch(() => { alert("يرجى تفعيل الميكروفون للتسجيل"); });
+}
 
-<!-- تضمين المحرك البرمجي المستقل لتشغيل المنظومة بالكامل وثباتها -->
-<script src="script.js"></script>
-</body>
-</html>
+function loadSavedSettings() {
+    let saved = localStorage.getItem(currentChildName + '_hero_config');
+    document.getElementById('questions-container').innerHTML = '';
+    document.getElementById('video-inputs').innerHTML = '';
+    if (saved) {
+        let data = JSON.parse(saved);
+        if (data.videoDuration) document.getElementById('video-timer-select').value = data.videoDuration;
+        if (data.videos) data.videos.forEach(v => addVideoField('https://youtube.com' + v));
+        if (data.questions) data.questions.forEach((q, idx) => addQuestionField(q.q, q.a, q.audio, q.img));
+        alert("✨ تم استرجاع خيارات الطفل ومقاطعه وزمن المؤقت تلقائياً لليوم الحالي!");
+    } else {
+        addVideoField();
+        for(let i=0; i<3; i++) addQuestionField();
+    }
+}
+
+function getBase64(file) {
+    return new Promise((res, rej) => {
+        const r = new FileReader();
+        r.readAsDataURL(file);
+        r.onload = () => res(r.result);
+        r.onerror = e => rej(e);
+    });
+}
+
+async function saveSettingsAndProceed() {
+    config.videoDuration = parseInt(document.getElementById('video-timer-select').value) || 60;
+    config.videos = [];
+    let links = document.getElementsByClassName('yt-link');
+    for(let l of links) {
+        if(l.value.trim()) {
+            const reg = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\/\?v=|\&v=)([^#\&\?]*).*/;
+            const m = l.value.match(reg);
+            config.videos.push((m && m.length === 11) ? m[2] : 'dQw4w9WgXcQ');
+        }
+    }
+    if(config.videos.length === 0) config.videos.push('dQw4w9WgXcQ');
+
+    config.questions = [];
+    let qT = document.getElementsByClassName('q-text');
+    let aT = document.getElementsByClassName('a-text');
+    for (let i = 0; i < qT.length; i++) {
+        if (qT[i].value.trim()) {
+            config.questions.push({ 
+                q: qT[i].value.trim(), 
+                a: aT[i].value.trim(), 
+                audio: recordedAudios[i] || "",
+                img: questionImagesB64[i] || ""
+            });
+        }
+    }
+    config.avatars = [];
+    for (let i = 1; i <= 5; i++) {
+        let fileInput = document.getElementById('file' + i);
+        if (fileInput && fileInput.files && fileInput.files[0]) {
+            let b64 = await getBase64(fileInput.files[0]);
+            config.avatars.push(b64);
+        } else { config.avatars.push('https://placehold.co' + i); }
+    }
+    localStorage.setItem(currentChildName + '_hero_config', JSON.stringify(config));
+    goToChildSelect();
+}
+
+function goToChildSelect() {
+    document.getElementById('parent-panel').classList.add('hidden');
+    document.getElementById('child-select-panel').classList.remove('hidden');
+    document.getElementById('welcome-child-title').innerText = `أهلاً بك يا بطل يا ${currentChildName}! ✨`;
+    let boxHtml = '';
+    config.avatars.forEach((src) => {
+        boxHtml += `<div class="avatar-box" onclick="startChildGame('${src}')"><img src="${src}"></div>`;
+    });
+    document.getElementById('box-container').innerHTML = boxHtml;
+}
+
+function startChildGame(avatarSrc) {
+    document.getElementById('child-select-panel').classList.add('hidden');
+    document.getElementById('game-panel').classList.remove('hidden');
+    document.getElementById('main-char').src = avatarSrc;
+    document.getElementById('main-char').classList.remove('mini');
+    document.getElementById('question-image').classList.add('hidden');
+    document.getElementById('pointing-indicator').style.display = 'none';
+    currentQuestionIndex = 0;
+    clearTimeout(videoTimeoutTimer);
+    startQuestionStep();
+}
+
+function speak(text, audioB64, cb) {
+    let charImg = document.getElementById('main-char');
+    charImg.classList.add('character-moving');
+    
+    document.getElementById('speech-bubble').innerText = text;
+    if (audioB64) {
+        let a = new Audio(audioB64);
+        a.onended = () => { charImg.classList.remove('character-moving'); cb(); };
+        a.play().catch(() => { fallbackTTS(text, cb); });
+    } else { fallbackTTS(text, cb); }
+}
+
+function fallbackTTS(text, cb) {
+    let charImg = document.getElementById('main-char');
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'ar-SA'; u.rate = 0.85; 
+    u.onend = () => { charImg.classList.remove('character-moving'); cb(); };
+    window.speechSynthesis.speak(u);
+}
+
+function triggerCelebration(callback) {
+    const elements = ['🎈', '🎉', '🌟', '👏', '🥳', '🎈'];
+    for (let i = 0; i < 25; i++) {
+        setTimeout(() => {
+            let el = document.createElement('div');
+            el.className = 'celebration-element';
+            el.innerText = elements[Math.floor(Math.random() * elements.length)];
+            el.style.left = Math.random() * 100 + 'vw';
+            el.style.setProperty('--random-x', (Math.random() * 200 - 100) + 'px');
+            el.style.animationDuration = (2 + Math.random() * 2) + 's';
+            document.body.appendChild(el);
+            setTimeout(() => { el.remove(); }, 4000);
+        }, i * 80);
+    }
+    setTimeout(callback, 2300);
+}
+
+function startQuestionStep() {
+    let imgEl = document.getElementById('question-image');
+    let handEl = document.getElementById('pointing-indicator');
+    
+    if (currentQuestionIndex >= config.questions.length) {
+        imgEl.classList.add('hidden');
+        handEl.style.display = 'none';
+        
+        document.getElementById('video-holder').classList.remove('hidden');
+        document.getElementById('main-char').classList.add('mini');
+        
+        let selectedVideoId = config.videos[Math.floor(Math.random() * config.videos.length)] || 'dQw4w9WgXcQ';
