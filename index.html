@@ -1,314 +1,57 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة البطل التفاعلية</title>
-    <style>
-        * { box-sizing: border-box; }
-        body { font-family: 'Segoe UI', sans-serif; background-color: #121212; text-align: center; margin: 0; padding: 15px; color: #ffffff; }
-        .container { max-width: 800px; margin: 10px auto; background: #1e1e1e; padding: 25px; border-radius: 25px; border: 1px solid #333; }
-        h1 { color: #ff4757; font-size: 26px; }
-        .section { background: #2a2a2a; padding: 15px; border-radius: 15px; margin: 15px 0; text-align: right; border: 1px solid #444; }
-        input, button { padding: 12px; font-size: 16px; border-radius: 10px; border: 1px solid #555; margin: 5px; background: #333; color: #fff; width: 100%; }
-        input[type="text"], input[type="file"] { background: #222; }
-        button { background-color: #2ed573; color: white; border: none; font-weight: bold; cursor: pointer; width: auto; min-width: 150px; }
-        .btn-ai { background-color: #6c5ce7; width: 100%; max-width: 280px; }
-        .btn-add { background-color: #1e90ff; padding: 5px; min-width: 50px; font-size: 20px; width: auto; }
-        .btn-rec { background-color: #ffa502; color: #000; font-size: 14px; padding: 8px; width: auto; }
-        .btn-install { background-color: #ffa502; color: #1a1a1a; font-size: 14px; padding: 8px 15px; margin-bottom: 15px; }
-        .hidden { display: none; }
-        .dynamic-item { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
-        .avatar-selector { display: flex; justify-content: center; gap: 15px; margin: 20px 0; flex-wrap: wrap; }
-        .avatar-box { border: 4px solid #444; border-radius: 50%; cursor: pointer; background: #333; overflow: hidden; width: 95px; height: 95px; }
-        .avatar-box img { width: 100%; height: 100%; object-fit: cover; }
-        #game-area { position: relative; width: 100%; min-height: 400px; background: #151515; border-radius: 20px; padding: 20px; }
-        #main-char { width: 150px; height: 150px; object-fit: contain; display: block; margin: 0 auto; border-radius: 50%; }
-        #main-char.mini { position: absolute; bottom: 15px; right: 15px; width: 75px; height: 75px; z-index: 99; border: 3px solid #ff4757; }
-        #speech-bubble { background: #2a2a2a; padding: 15px; border-radius: 15px; font-size: 22px; font-weight: bold; margin: 15px auto; border-right: 5px solid #ff4757; }
-        #video-holder { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; background: #000; border-radius: 15px; margin-top: 15px; }
-        #video-holder iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
-        .mic-bar { width: 100%; height: 10px; background: #444; border-radius: 5px; overflow: hidden; margin-top: 15px; }
-        #mic-progress { width: 0%; height: 100%; background: #2ed573; }
-    </style>
-</head>
-<body>
-<div class="container">
-    <button id="install-btn" class="btn-install" onclick="showInstallInstructions()">📲 اضغط هنا لمعرفة طريقة تثبيت المنصة على الشاشة الرئيسية للجوال</button>
-    <h1>🎈 منصة البطل التفاعلية</h1>
-    
-    <div id="login-screen">
-        <p style="font-size: 17px; color: #aaa;">مرحباً بك يا بطل في عالمك التفاعلي الجديد</p>
-        <div class="section" style="text-align: center;">
-            <label style="font-weight: bold; display: block; margin-bottom: 10px;">اكتب اسمك هنا للدخول:</label>
-            <input type="text" id="child-name" placeholder="مثال: أحمد" style="text-align: center;"><br>
-            <button onclick="handleLogin()">دخول 🚀</button>
-        </div>
-    </div>
+* { box-sizing: border-box; }
+body { font-family: 'Segoe UI', sans-serif; background-color: #121212; text-align: center; margin: 0; padding: 15px; color: #ffffff; overflow-x: hidden; position: relative; min-height: 100vh; }
 
-    <div id="parent-panel" class="hidden">
-        <h2>⚙️ لوحة إعدادات الجلسة والذاكرة الدائمة</h2>
-        <div class="section">
-            <h3>1️⃣ اختر صور الشخصيات الخمس المفضلة للطفل من الاستوديو مباشرة:</h3>
-            <input type="file" id="file1" accept="image/*" style="margin-bottom:5px;">
-            <input type="file" id="file2" accept="image/*" style="margin-bottom:5px;">
-            <input type="file" id="file3" accept="image/*" style="margin-bottom:5px;">
-            <input type="file" id="file4" accept="image/*" style="margin-bottom:5px;">
-            <input type="file" id="file5" accept="image/*">
-        </div>
-        <div class="section">
-            <h3>2️⃣ منافذ مقاطع فيديو اليوتيوب (اضغط + لإضافة حتى 15 مقطعاً):</h3>
-            <div id="video-inputs">
-                <div class="dynamic-item"><input type="text" class="yt-link" placeholder="رابط فيديو يوتيوب هنا"></div>
-            </div>
-            <button type="button" class="btn-add" onclick="addVideoField()">+</button>
-        </div>
-        <div class="section">
-            <h3>3️⃣ الأسئلة التفاعلية وتسجيل الصوت (اضغط + لإضافة حتى 10 أسئلة أو أكثر):</h3>
-            <div id="questions-container"></div>
-            <button type="button" class="btn-add" onclick="addQuestionField()">+</button>
-        </div>
-        <button type="button" onclick="saveSettingsAndProceed()">حفظ الإعدادات وبدء اللعبة 🎮</button>
-    </div>
+/* منظومة ملصقات الشخصيات الكرتونية المتحركة في الخلفية */
+.cartoon-bg-stickers { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 1; overflow: hidden; opacity: 0.25; }
+.sticker { position: absolute; font-size: 70px; animation: floatSticker 6s infinite alternate ease-in-out; }
+@keyframes floatSticker {
+    0% { transform: translateY(0) rotate(0deg) scale(1); }
+    100% { transform: translateY(-20px) rotate(15deg) scale(1.1); }
+}
+/* توزيع الملصقات بأماكن عشوائية مبهجة */
+.st1 { top: 10%; left: 8%; animation-delay: 0s; }
+.st2 { top: 15%; right: 10%; animation-delay: 1s; }
+.st3 { bottom: 20%; left: 12%; animation-delay: 2s; }
+.st4 { bottom: 15%; right: 8%; animation-delay: 3s; }
+.st5 { top: 45%; left: 5%; animation-delay: 1.5s; }
+.st6 { top: 50%; right: 6%; animation-delay: 2.5s; }
 
-    <div id="child-select-panel" class="hidden">
-        <h2 id="welcome-child-title"></h2>
-        <p style="font-size:18px;">اختر صديقك الكرتوني اللي تبغاه يلعب معك اليوم! 😍</p>
-        <div class="avatar-selector" id="box-container"></div>
-    </div>
-
-    <div id="game-panel" class="hidden">
-        <div id="game-area">
-            <img id="main-char" src="" alt="صديق الطفل">
-            <div id="speech-bubble">جاري تحضير اللعبة...</div>
-            <div class="mic-bar"><div id="mic-progress"></div></div>
-            <div id="video-holder" class="hidden"></div>
-        </div>
-        <br>
-        <button type="button" onclick="resetToLogin()" style="background-color: #7f8c8d;">خروج وعودة للرئيسية ↩️</button>
-    </div>
-</div><script>
-    let config = { avatars: [], videos: [], questions: [] };
-    let currentChildName = '';
-    let currentQuestionIndex = 0;
-    let attempts = 0;
-    let mediaRecorders = {};
-    let recordedAudios = {};
-
-    function showInstallInstructions() {
-        alert("📲 لتثبيت هذا الموقع كتطبيق على شاشتك الرئيسية:\n\n• للآيفون (Safari): اضغط على زر 'مشاركة' أسفل الشاشة ثم اختر 'إضافة إلى الشاشة الرئيسية'.\n\n• للأندرويد (Chrome): اضغط على النقاط الثلاث بالأعلى ثم اختر 'تثبيت التطبيق'.");
-    }
-
-    function handleLogin() {
-        const nameInput = document.getElementById('child-name').value.trim();
-        if (!nameInput) { alert("فضلاً اكتب اسم الطفل أولاً"); return; }
-        currentChildName = nameInput;
-        document.getElementById('login-screen').classList.add('hidden');
-        document.getElementById('parent-panel').classList.remove('hidden');
-        loadSavedSettings();
-    }
-
-    function addVideoField(value = '') {
-        let container = document.getElementById('video-inputs');
-        if (container.children.length >= 15) { alert("الحد الأقصى هو 15 مقطعاً"); return; }
-        let div = document.createElement('div');
-        div.className = 'dynamic-item';
-        div.innerHTML = `<input type="text" class="yt-link" value="${value}" placeholder="رابط فيديو يوتيوب إضافي">`;
-        container.appendChild(div);
-    }
-
-    function addQuestionField(qText = '', aText = '', audioKey = '') {
-        let container = document.getElementById('questions-container');
-        let count = container.children.length;
-        if (count >= 15) { alert("تم الوصول للحد الأقصى للأسئلة"); return; }
-        let div = document.createElement('div');
-        div.className = 'section';
-        div.innerHTML = `
-            <label style="font-weight:bold;">سؤال تفاعلي ${count + 1}:</label>
-            <input type="text" class="q-text" value="${qText || 'وش هذا يا بطل؟'}" placeholder="اكتب السؤال بالعامية">
-            <label>الكلمة المطلوب نطقها من الطفل:</label>
-            <input type="text" class="a-text" value="${aText || 'كورة'}" placeholder="الكلمة المستهدفة">
-            <button type="button" class="btn-rec" id="rec-btn-${count}" onclick="toggleRecording(${count})">🎙️ سجل بصوت الأب/الأم</button>
-            <span id="rec-status-${count}" style="font-size:12px; color:#ffa502; display:block; margin-top:5px;"></span>
-        `;
-        container.appendChild(div);
-        if (audioKey) {
-            recordedAudios[count] = audioKey;
-            document.getElementById(`rec-status-${count}`).innerText = "✅ تم استرجاع التسجيل الصوتي السابق!";
-        }
-    }
-
-    function toggleRecording(index) {
-        let btn = document.getElementById(`rec-btn-${index}`);
-        let status = document.getElementById(`rec-status-${index}`);
-        if (mediaRecorders[index] && mediaRecorders[index].state === "recording") {
-            mediaRecorders[index].stop();
-            btn.innerText = "🎙️ سجل بصوت الأب/الأم";
-            return;
-        }
-        navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
-            let mediaRecorder = new MediaRecorder(stream);
-            mediaRecorders[index] = mediaRecorder;
-            let chunks = [];
-            mediaRecorder.ondataavailable = e => chunks.push(e.data);
-            mediaRecorder.onstop = () => {
-                let blob = new Blob(chunks, { type: 'audio/ogg;' });
-                let reader = new FileReader();
-                reader.readAsDataURL(blob);
-                reader.onloadend = () => {
-                    recordedAudios[index] = reader.result;
-                    status.innerText = "✅ تم حفظ صوتك الحقيقي بنجاح!";
-                }
-            };
-            mediaRecorder.start();
-            btn.innerText = "🛑 حفظ التسجيل";
-            status.innerText = "جاري التسجيل الآن...";
-        }).catch(() => { alert("يرجى تفعيل الميكروفون للتسجيل"); });
-    }
-</script><script>
-    function loadSavedSettings() {
-        let saved = localStorage.getItem(currentChildName + '_hero_config');
-        document.getElementById('questions-container').innerHTML = '';
-        document.getElementById('video-inputs').innerHTML = '';
-        if (saved) {
-            let data = JSON.parse(saved);
-            if (data.videos) data.videos.forEach(v => addVideoField('https://youtube.com' + v));
-            if (data.questions) data.questions.forEach((q, idx) => addQuestionField(q.q, q.a, q.audio));
-            alert("✨ تم استرجاع خيارات الطفل ومقاطعه المحفوظة تلقائياً!");
-        } else {
-            addVideoField();
-            for(let i=0; i<3; i++) addQuestionField();
-        }
-    }
-
-    function getBase64(file) {
-        return new Promise((res, rej) => {
-            const r = new FileReader();
-            r.readAsDataURL(file);
-            r.onload = () => res(r.result);
-            r.onerror = e => rej(e);
-        });
-    }
-
-    async function saveSettingsAndProceed() {
-        config.videos = [];
-        let links = document.getElementsByClassName('yt-link');
-        for(let l of links) {
-            if(l.value.trim()) {
-                const reg = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\/\?v=|\&v=)([^#\&\?]*).*/;
-                const m = l.value.match(reg);
-                config.videos.push((m && m.length === 11) ? m[2] : 'dQw4w9WgXcQ');
-            }
-        }
-        config.questions = [];
-        let qT = document.getElementsByClassName('q-text');
-        let aT = document.getElementsByClassName('a-text');
-        for (let i = 0; i < qT.length; i++) {
-            if (qT[i].value.trim()) {
-                config.questions.push({ q: qT[i].value.trim(), a: aT[i].value.trim(), audio: recordedAudios[i] || "" });
-            }
-        }
-        config.avatars = [];
-        for (let i = 1; i <= 5; i++) {
-            let f = document.getElementById('file' + i).files[0];
-            if (f) {
-                let b64 = await getBase64(f);
-                config.avatars.push(b64);
-            } else { config.avatars.push('https://placehold.co' + i); }
-        }
-        localStorage.setItem(currentChildName + '_hero_config', JSON.stringify(config));
-        goToChildSelect();
-    }
-
-    function goToChildSelect() {
-        document.getElementById('parent-panel').classList.add('hidden');
-        document.getElementById('child-select-panel').classList.remove('hidden');
-        document.getElementById('welcome-child-title').innerText = `أهلاً بك يا بطل يا ${currentChildName}! ✨`;
-        let boxHtml = '';
-        config.avatars.forEach((src) => {
-            boxHtml += `<div class="avatar-box" onclick="startChildGame('${src}')"><img src="${src}"></div>`;
-        });
-        document.getElementById('box-container').innerHTML = boxHtml;
-    }
-
-    function startChildGame(avatarSrc) {
-        document.getElementById('child-select-panel').classList.add('hidden');
-        document.getElementById('game-panel').classList.remove('hidden');
-        document.getElementById('main-char').src = avatarSrc;
-        document.getElementById('main-char').classList.remove('mini');
-        document.getElementById('video-holder').classList.add('hidden');
-        currentQuestionIndex = 0;
-        selectedVideoId = config.videos[Math.floor(Math.random() * config.videos.length)] || 'dQw4w9WgXcQ';
-        
-        let holder = document.getElementById('video-holder');
-        holder.innerHTML = `<iframe id="yt-player-frame" src="https://youtube.com{selectedVideoId}?autoplay=1&enablejsapi=1" allow="autoplay"></iframe>`;
-        startQuestionStep();
-    }
-
-    function speak(text, audioB64, cb) {
-        document.getElementById('speech-bubble').innerText = text;
-        if (audioB64) {
-            let a = new Audio(audioB64);
-            a.onended = cb;
-            a.play().catch(() => { fallbackTTS(text, cb); });
-        } else { fallbackTTS(text, cb); }
-    }
-
-    function fallbackTTS(text, cb) {
-        const u = new SpeechSynthesisUtterance(text);
-        u.lang = 'ar-SA'; u.rate = 0.85; u.onend = cb;
-        window.speechSynthesis.speak(u);
-    }
-
-    function startQuestionStep() {
-        if (currentQuestionIndex >= config.questions.length) {
-            document.getElementById('video-holder').classList.remove('hidden');
-            document.getElementById('main-char').classList.add('mini');
-            return;
-        }
-        attempts = 0;
-        let curQ = config.questions[currentQuestionIndex];
-        speak(curQ.q, curQ.audio, () => {
-            listenToChild((speech) => {
-                if (speech.includes(curQ.a) || speech.length > 0) {
-                    currentQuestionIndex++; startQuestionStep();
-                } else { handleFailure(); }
-            }, () => { handleFailure(); });
-        });
-    }
-
-    function handleFailure() {
-        attempts++;
-        let curQ = config.questions[currentQuestionIndex];
-        if (attempts >= 3) {
-            speak("ممتاز يا بطل حاولت! هذي هي " + curQ.a, "", () => {
-                currentQuestionIndex++; startQuestionStep();
-            });
-        } else {
-            speak("ما سمعتك زين يا بطل، حاول مرة ثانية؟", "", () => { startQuestionStep(); });
-        }
-    }
-
-    function listenToChild(onSuccess, onError) {
-        document.getElementById('mic-progress').style.width = '100%';
-        let SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
-        if (SpeechRec) {
-            let rec = new SpeechRecognition(); rec.lang = 'ar-SA'; rec.start();
-            rec.onresult = e => {
-                document.getElementById('mic-progress').style.width = '0%';
-                onSuccess(e.results[0][0].transcript.toLowerCase());
-            };
-            rec.onerror = () => { document.getElementById('mic-progress').style.width = '0%'; onError(); };
-        } else {
-            setTimeout(() => { document.getElementById('mic-progress').style.width = '0%'; onSuccess("صوت"); }, 2000);
-        }
-    }
-
-    function resetToLogin() {
-        document.getElementById('game-panel').classList.add('hidden');
-        document.getElementById('login-screen').classList.remove('hidden');
-        document.getElementById('child-name').value = '';
-    }
-</script>
-</body>
-</html>
+.container { max-width: 800px; margin: 10px auto; background: rgba(30, 30, 30, 0.9); padding: 25px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 1px solid #333; position: relative; z-index: 5; backdrop-filter: blur(5px); }
+h1 { color: #ff4757; font-size: 26px; margin-bottom: 5px; }
+.section { background: #2a2a2a; padding: 15px; border-radius: 15px; margin: 15px 0; text-align: right; border: 1px solid #444; }
+input, button, select { padding: 12px; font-size: 16px; border-radius: 10px; border: 1px solid #555; margin: 5px; background: #333; color: #fff; width: 100%; }
+input[type="text"], input[type="file"], select { background: #222; }
+button { background-color: #2ed573; color: white; border: none; font-weight: bold; cursor: pointer; transition: 0.2s; width: auto; min-width: 150px; }
+button:hover { background-color: #26af5f; }
+.btn-add { background-color: #1e90ff; padding: 5px 15px; min-width: 50px; font-size: 20px; width: auto; }
+.btn-rec { background-color: #ffa502; color: #000; font-size: 14px; padding: 8px; width: auto; }
+.btn-install { background-color: #ffa502; color: #1a1a1a; font-size: 14px; padding: 8px 15px; margin-bottom: 15px; width: 100%; }
+.hidden { display: none; }
+.dynamic-item { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.avatar-selector { display: flex; justify-content: center; gap: 15px; margin: 20px 0; flex-wrap: wrap; }
+.avatar-box { border: 4px solid #444; border-radius: 50%; cursor: pointer; transition: 0.2s; background: #333; overflow: hidden; width: 95px; height: 95px; }
+.avatar-box img { width: 100%; height: 100%; object-fit: cover; }
+#game-area { position: relative; width: 100%; min-height: 460px; background: #151515; border-radius: 20px; padding: 20px; margin-top: 15px; overflow: hidden; }
+#main-char { width: 140px; height: 140px; object-fit: contain; display: block; margin: 0 auto; transition: 0.3s; border-radius: 50%; }
+.character-moving { animation: charDance 0.5s infinite alternate ease-in-out; border: 4px solid #2ed573; }
+@keyframes charDance {
+    0% { transform: translateY(0) rotate(-3deg) scale(1); }
+    100% { transform: translateY(-12px) rotate(3deg) scale(1.05); }
+}
+#main-char.mini { position: absolute; bottom: 15px; right: 15px; width: 75px; height: 75px; z-index: 99; border: 3px solid #ff4757; background: #2d2d2d; animation: none; }
+#pointing-indicator { position: absolute; font-size: 45px; z-index: 10; top: 40%; left: 50%; transform: translateX(-50%); animation: handPush 0.6s infinite alternate ease-in-out; display: none; }
+@keyframes handPush {
+    0% { transform: translateX(-50%) translateY(0) scale(1); filter: drop-shadow(0 0 5px #ff4757); }
+    100% { transform: translateX(-50%) translateY(15px) scale(1.2); filter: drop-shadow(0 0 15px #ff4757); }
+}
+#question-image { max-width: 180px; max-height: 180px; margin: 25px auto 10px auto; display: block; border-radius: 15px; border: 4px solid #ff4757; box-shadow: 0 0 20px rgba(255, 71, 87, 0.4); background-color: #222; }
+#speech-bubble { background: #2a2a2a; padding: 15px; border-radius: 15px; font-size: 22px; font-weight: bold; color: #fff; margin: 15px auto; max-width: 90%; border-right: 5px solid #ff4757; }
+#video-holder { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; background: #000; border-radius: 15px; margin-top: 15px; }
+#video-holder iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
+.mic-bar { width: 100%; height: 10px; background: #444; border-radius: 5px; overflow: hidden; margin-top: 15px; }
+#mic-progress { width: 0%; height: 100%; background: #2ed573; transition: 0.1s; }
+.celebration-element { position: fixed; bottom: -100px; font-size: 40px; z-index: 9999; animation: floatUp 3s linear forwards; pointer-events: none; }
+@keyframes floatUp {
+    0% { transform: translateY(0) translateX(0) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(-120vh) translateX(var(--random-x)) rotate(360deg); opacity: 0; }
+}
